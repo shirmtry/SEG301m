@@ -57,7 +57,7 @@ Tải file `qwen2.5-3b-instruct-q4_k_m.gguf` (khoảng 1.9GB) từ Hugging Face 
 
 **b) Cơ sở dữ liệu Vector (FAISS Index & Metadata):**
 Tải file nén `legal_data.zip` (khoảng 2.4GB) chứa `legal_v2.index` và `legal_meta_v2.json` từ link dưới đây:
-- 📥 **[DÁN LINK MEDIAFIRE CỦA BẠN VÀO ĐÂY - VD: https://www.mediafire.com/file/.../legal_data.zip]**
+- 📥 **[https://www.mediafire.com/folder/2iiyg8ix6vx1y/DATA_%2B_MODEL_HTK]**
 
 **Hướng dẫn cài đặt Data:**
 1. Tải file `legal_data.zip` từ link MediaFire.
@@ -90,7 +90,6 @@ python test_case.py
 ## 📂 Cấu trúc thư mục
 ```text
 ├── app.py                  # Giao diện Web Streamlit
-├── ask.py                  # Giao diện Chat trên Terminal
 ├── test_case.py            # Script chạy Test 100 câu hỏi & xuất báo cáo
 ├── build_index.py          # Script tạo Vector DB (FAISS) từ dữ liệu thô
 ├── setup_env.py            # Script tự động cài đặt thư viện và tải model BGE-M3
