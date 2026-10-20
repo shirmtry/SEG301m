@@ -12,12 +12,17 @@ Thay vì để mô hình ngôn ngữ tự do "sáng tạo" (dẫn đến ảo gi
 
 **Lĩnh vực trọng tâm:** Dữ liệu hiện tại tập trung cực kỳ đồ sộ vào các mảng **Tài chính, Thuế, Phí, Ngân sách, Giao thông Đường bộ, Hàng hải và Hàng không**.
 
+## 📚 Tài liệu & Báo cáo Đánh giá (Dành cho Giảng viên)
+- 📄 **[BÁO CÁO ĐÁNH GIÁ HỆ THỐNG (FINAL REPORT)](./FINAL_REPORT.md)**
+  *(Nhấp vào link trên để xem chi tiết quá trình phân tích dữ liệu, kiến trúc, kết quả test 100 câu và đánh giá ưu/nhược điểm).*
+- 📊 **[File kết quả Test 100 câu (BAO_CAO_100_CAU.csv)](./BAO_CAO_100_CAU.csv)**
+  *(Xem chi tiết từng câu hỏi, câu trả lời của Bot và nguồn trích dẫn).*
+
 ## 🚀 Tính năng nổi bật
 - **Zero Hallucination (Chống ảo giác):** Từ chối trả lời nếu không tìm thấy thông tin trong cơ sở dữ liệu.
 - **Trích dẫn nguồn minh bạch:** Luôn hiển thị số hiệu văn bản, tiêu đề và các điều khoản liên quan.
 - **Giao diện Web hiện đại:** Xây dựng bằng Streamlit với khả năng streaming (in chữ ra từng từ) giúp giảm cảm giác chờ đợi.
 - **Tối ưu hóa Local:** Chạy hoàn toàn trên máy cá nhân (CPU) thông qua định dạng GGUF lượng tử hóa (Q4_K_M), không cần GPU đắt tiền hay API tốn phí.
-- **Hỗ trợ đắc lực cho báo cáo:** Tích hợp sẵn script test tự động 100 câu hỏi và đo lường hiệu năng (Latency).
 
 ## 🏗️ Kiến trúc hệ thống (Pipeline)
 1. **Dữ liệu (Data):** 351.986 chunks văn bản luật, được làm sạch và phân mảnh.
@@ -48,21 +53,13 @@ python setup_env.py
 ```
 
 ### 4. Tải Dữ liệu & Mô hình (Bắt buộc)
-Do dung lượng quá lớn vượt giới hạn GitHub, bạn **BẮT BUỘC** phải tải thủ công 2 thành phần sau:
+Do dung lượng quá lớn vượt giới hạn GitHub, bạn **BẮT BUỘC** phải tải thủ công 2 thành phần từ thư mục lưu trữ dưới đây:
+- 📥 **Link thư mục chứa Data & Model:** **[MediaFire - DATA + MODEL HTK](https://www.mediafire.com/folder/2iiyg8ix6vx1y/DATA_%2B_MODEL_HTK)**
 
-**a) LLM Generation (Qwen2.5-3B-GGUF):**
-Tải file `qwen2.5-3b-instruct-q4_k_m.gguf` (khoảng 1.9GB) từ Hugging Face và bỏ vào thư mục `qwen_model/`.
-- 📥 **Link tải Qwen:** [Tải Qwen2.5-3B-Instruct-GGUF](https://huggingface.co/Qwen/Qwen2.5-3B-Instruct-GGUF/tree/main) (Tìm file `qwen2.5-3b-instruct-q4_k_m.gguf`)
-*(Hoặc chạy lệnh: `huggingface-cli download Qwen/Qwen2.5-3B-Instruct-GGUF qwen2.5-3b-instruct-q4_k_m.gguf --local-dir qwen_model`)*
-
-**b) Cơ sở dữ liệu Vector (FAISS Index & Metadata):**
-Tải file nén `legal_data.zip` (khoảng 2.4GB) chứa `legal_v2.index` và `legal_meta_v2.json` từ link dưới đây:
-- 📥 **[https://www.mediafire.com/folder/2iiyg8ix6vx1y/DATA_%2B_MODEL_HTK]**
-
-**Hướng dẫn cài đặt Data:**
-1. Tải file `legal_data.zip` từ link MediaFire.
-2. Giải nén, bạn sẽ nhận được 2 file: `legal_v2.index` và `legal_meta_v2.json`.
-3. Tạo thư mục `processed/` (nếu chưa có) và copy 2 file này vào trong đó.
+**Hướng dẫn cài đặt:**
+1. Truy cập link MediaFire trên, tải file `legal_data.zip` và thư mục `qwen_model`.
+2. Giải nén `legal_data.zip`, bạn sẽ nhận được 2 file: `legal_v2.index` và `legal_meta_v2.json`. Copy 2 file này vào thư mục `processed/` của dự án.
+3. Copy file `qwen2.5-3b-instruct-q4_k_m.gguf` vào thư mục `qwen_model/` của dự án.
 
 ---
 
@@ -73,11 +70,6 @@ Tải file nén `legal_data.zip` (khoảng 2.4GB) chứa `legal_v2.index` và `l
 streamlit run app.py
 ```
 Trình duyệt sẽ tự động mở tại `http://localhost:8501`. Gõ câu hỏi và xem kết quả kèm nguồn trích dẫn.
-
-### Chạy Chatbot trên Terminal (CLI)
-```bash
-python ask.py "Mức phạt vượt đèn đỏ của xe máy là bao nhiêu?"
-```
 
 ### Chạy Bài Test Đánh Giá (Dành cho Báo cáo)
 Script này sẽ chạy 100 câu hỏi mẫu, đo thời gian phản hồi và xuất ra file `BAO_CAO_100_CAU.csv`:
@@ -94,10 +86,12 @@ python test_case.py
 ├── build_index.py          # Script tạo Vector DB (FAISS) từ dữ liệu thô
 ├── setup_env.py            # Script tự động cài đặt thư viện và tải model BGE-M3
 ├── test_cases_100.json     # Bộ 100 câu hỏi đánh giá hệ thống
+├── FINAL_REPORT.md         # Báo cáo đánh giá chi tiết hệ thống
+├── BAO_CAO_100_CAU.csv     # Kết quả test 100 câu (đi kèm báo cáo)
 ├── requirements.txt        # Danh sách các thư viện cần thiết
 ├── processed/              # Chứa FAISS Index và Metadata (Tải từ MediaFire)
 ├── models/                 # Chứa Embedding model BGE-M3 (Tự động tải)
-└── qwen_model/             # Chứa LLM Qwen GGUF (Tải từ Hugging Face)
+└── qwen_model/             # Chứa LLM Qwen GGUF (Tải từ MediaFire)
 ```
 
 ---
