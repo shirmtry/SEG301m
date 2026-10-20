@@ -23,7 +23,6 @@ test_results/
 law_chat_cache.json
 
 # 3 file bạn muốn up sau
-BAO_CAO_TEST.csv
 abc.ipynb
 app.py
 phantich.py
