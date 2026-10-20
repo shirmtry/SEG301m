@@ -13,9 +13,9 @@ Thay vì để mô hình ngôn ngữ tự do "sáng tạo" (dẫn đến ảo gi
 **Lĩnh vực trọng tâm:** Dữ liệu hiện tại tập trung cực kỳ đồ sộ vào các mảng **Tài chính, Thuế, Phí, Ngân sách, Giao thông Đường bộ, Hàng hải và Hàng không**.
 
 ## 📚 Tài liệu & Báo cáo Đánh giá (Dành cho Giảng viên)
-- 📄 **[BÁO CÁO ĐÁNH GIÁ HỆ THỐNG (FINAL REPORT)](./FINAL_REPORT.md)**
+- 📄 **[BÁO CÁO ĐÁNH GIÁ HỆ THỐNG (FINAL REPORT)](./report_assets/DEMO_FINAL_REPORT.md)**
   *(Nhấp vào link trên để xem chi tiết quá trình phân tích dữ liệu, kiến trúc, kết quả test 100 câu và đánh giá ưu/nhược điểm).*
-- 📊 **[File kết quả Test 100 câu (BAO_CAO_100_CAU.csv)](./BAO_CAO_100_CAU.csv)**
+- 📊 **[File kết quả Test 100 câu (BAO_CAO_TEST.csv)](./report_assets/BAO_CAO_TEST.csv)**
   *(Xem chi tiết từng câu hỏi, câu trả lời của Bot và nguồn trích dẫn).*
 
 ## 🚀 Tính năng nổi bật
@@ -29,6 +29,39 @@ Thay vì để mô hình ngôn ngữ tự do "sáng tạo" (dẫn đến ảo gi
 2. **Embedding:** Sử dụng mô hình SOTA `BAAI/bge-m3` (1024 chiều) để vector hóa văn bản.
 3. **Vector Database:** Sử dụng `FAISS` (Facebook AI Similarity Search) để tìm kiếm ngữ nghĩa siêu tốc.
 4. **LLM Generation:** Mô hình `Qwen2.5-3B-Instruct` (định dạng GGUF) chạy local qua thư viện `llama-cpp-python`.
+
+---
+
+## 📊 Phân tích Cơ sở Dữ liệu
+Dựa trên quá trình phân tích file `legal_meta_v2.json`, dữ liệu của hệ thống tập trung cực kỳ đồ sộ vào các mảng Tài chính, Thuế và Giao thông. Dưới đây là các biểu đồ thống kê dữ liệu:
+
+<p align="center">
+  <img src="./report_assets/top_linh_vuc.png" width="48%" />
+  <img src="./report_assets/loai_van_ban.png" width="48%" />
+</p>
+<p align="center">
+  <img src="./report_assets/chunk_length.png" width="60%" />
+</p>
+
+---
+
+## 🎯 Đánh giá Hiệu năng Hệ thống
+Hệ thống được đánh giá tự động trên bộ **100 câu hỏi test** trải đều 8 nhóm ngành luật. Kết quả cho thấy hệ thống đạt độ chính xác cao và khả năng chống ảo giác tuyệt đối.
+
+<p align="center">
+  <img src="./report_assets/ty_le_tra_loi.png" width="45%" />
+  <img src="./report_assets/bieu_do_pho_diem.png" width="45%" />
+</p>
+<p align="center">
+  <img src="./report_assets/bieu_do_diem_vs_thoigian.png" width="80%" />
+</p>
+<p align="center">
+  <img src="./report_assets/bieu_do_so_sanh_diem.png" width="48%" />
+  <img src="./report_assets/phan_bo_thoi_gian.png" width="48%" />
+</p>
+<p align="center">
+  <img src="./report_assets/top_van_ban.png" width="70%" />
+</p>
 
 ---
 
@@ -72,7 +105,7 @@ streamlit run app.py
 Trình duyệt sẽ tự động mở tại `http://localhost:8501`. Gõ câu hỏi và xem kết quả kèm nguồn trích dẫn.
 
 ### Chạy Bài Test Đánh Giá (Dành cho Báo cáo)
-Script này sẽ chạy 100 câu hỏi mẫu, đo thời gian phản hồi và xuất ra file `BAO_CAO_100_CAU.csv`:
+Script này sẽ chạy 100 câu hỏi mẫu, đo thời gian phản hồi và xuất ra file `BAO_CAO_TEST.csv`:
 ```bash
 python test_case.py
 ```
@@ -86,8 +119,7 @@ python test_case.py
 ├── build_index.py          # Script tạo Vector DB (FAISS) từ dữ liệu thô
 ├── setup_env.py            # Script tự động cài đặt thư viện và tải model BGE-M3
 ├── test_cases_100.json     # Bộ 100 câu hỏi đánh giá hệ thống
-├── FINAL_REPORT.md         # Báo cáo đánh giá chi tiết hệ thống
-├── BAO_CAO_100_CAU.csv     # Kết quả test 100 câu (đi kèm báo cáo)
+├── report_assets/          # Thư mục chứa Báo cáo (.md), file CSV kết quả và các biểu đồ (.png)
 ├── requirements.txt        # Danh sách các thư viện cần thiết
 ├── processed/              # Chứa FAISS Index và Metadata (Tải từ MediaFire)
 ├── models/                 # Chứa Embedding model BGE-M3 (Tự động tải)
