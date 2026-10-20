@@ -1,0 +1,28 @@
+# Môi trường ảo
+venv/
+.venv/
+__pycache__/
+*.pyc
+
+# Các file và thư mục dữ liệu nặng
+data/
+build/
+dist/
+*.spec
+*.pkl
+*.jsonl
+chunks*
+processed/
+models/
+qwen_model/
+
+# File log, cache, kết quả test tạm
+*.log
+.DS_Store
+test_results/
+law_chat_cache.json
+
+# 3 file bạn muốn up sau
+BAO_CAO_TEST.csv
+abc.ipynb
+app.py

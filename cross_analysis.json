@@ -1,0 +1,759 @@
+{
+  "created": "2026-10-16T15:40:03.939741",
+  "total": 100,
+  "cross_topic_count": 6,
+  "mismatch_count": 0,
+  "overlap_pair_count": 28,
+  "cluster_count": 15,
+  "cross_topic": [
+    {
+      "id": 83,
+      "question": "Thừa kế quyền sử dụng đất thế nào?",
+      "label": "unanswerable",
+      "bm25": 24.078592972422516,
+      "hint_topic": "Đất đai",
+      "primary_topic": "Đất đai",
+      "secondary_topics": [
+        "Dân sự"
+      ],
+      "matched_keywords": {
+        "Dân sự": [
+          "thừa kế"
+        ],
+        "Đất đai": [
+          "đất",
+          "quyền sử dụng đất",
+          "thừa kế quyền sử dụng đất"
+        ]
+      },
+      "is_cross": true,
+      "topic_mismatch": false
+    },
+    {
+      "id": 28,
+      "question": "Kết hôn giả có bị xử lý hình sự không?",
+      "label": "unanswerable",
+      "bm25": 35.7011800458034,
+      "hint_topic": "Hôn nhân & Gia đình",
+      "primary_topic": "Hôn nhân & Gia đình",
+      "secondary_topics": [
+        "Hình sự"
+      ],
+      "matched_keywords": {
+        "Hôn nhân & Gia đình": [
+          "kết hôn",
+          "kết hôn giả"
+        ],
+        "Hình sự": [
+          "hình sự"
+        ]
+      },
+      "is_cross": true,
+      "topic_mismatch": false
+    },
+    {
+      "id": 78,
+      "question": "Thu hồi đất có được bồi thường không?",
+      "label": "unanswerable",
+      "bm25": 38.590767899632226,
+      "hint_topic": "Đất đai",
+      "primary_topic": "Đất đai",
+      "secondary_topics": [
+        "Dân sự"
+      ],
+      "matched_keywords": {
+        "Dân sự": [
+          "bồi thường"
+        ],
+        "Đất đai": [
+          "đất",
+          "thu hồi"
+        ]
+      },
+      "is_cross": true,
+      "topic_mismatch": false
+    },
+    {
+      "id": 11,
+      "question": "Khi chấm dứt HĐLĐ trái pháp luật, người sử dụng lao động phải bồi thường gì?",
+      "label": "unanswerable",
+      "bm25": 39.70618063804297,
+      "hint_topic": "Lao động",
+      "primary_topic": "Lao động",
+      "secondary_topics": [
+        "Dân sự"
+      ],
+      "matched_keywords": {
+        "Lao động": [
+          "lao động",
+          "hđlđ",
+          "người sử dụng lao động"
+        ],
+        "Dân sự": [
+          "bồi thường"
+        ]
+      },
+      "is_cross": true,
+      "topic_mismatch": false
+    },
+    {
+      "id": 19,
+      "question": "Công ty có được sa thải nhân viên tự ý nghỉ việc không?",
+      "label": "unanswerable",
+      "bm25": 53.28203678097425,
+      "hint_topic": "Lao động",
+      "primary_topic": "Lao động",
+      "secondary_topics": [
+        "Doanh nghiệp & Thuế"
+      ],
+      "matched_keywords": {
+        "Lao động": [
+          "sa thải"
+        ],
+        "Doanh nghiệp & Thuế": [
+          "công ty"
+        ]
+      },
+      "is_cross": true,
+      "topic_mismatch": false
+    },
+    {
+      "id": 35,
+      "question": "Con nuôi có được hưởng thừa kế không?",
+      "label": "answerable",
+      "bm25": 42.0116611376842,
+      "hint_topic": "Hôn nhân & Gia đình",
+      "primary_topic": "Hôn nhân & Gia đình",
+      "secondary_topics": [
+        "Dân sự"
+      ],
+      "matched_keywords": {
+        "Hôn nhân & Gia đình": [
+          "con nuôi"
+        ],
+        "Dân sự": [
+          "thừa kế"
+        ]
+      },
+      "is_cross": true,
+      "topic_mismatch": false
+    }
+  ],
+  "mismatch": [],
+  "overlap_pairs": [
+    {
+      "id_a": 99,
+      "q_a": "Thời hiệu xử phạt vi phạm hành chính là bao lâu?",
+      "topic_a": "Hành chính",
+      "id_b": 95,
+      "q_b": "Xử phạt vi phạm hành chính về thuế thế nào?",
+      "topic_b": "Doanh nghiệp & Thuế",
+      "jaccard": 0.556,
+      "shared_tokens": [
+        "chính",
+        "hành",
+        "phạm",
+        "vi",
+        "xử"
+      ],
+      "cross_topic": true
+    },
+    {
+      "id_a": 41,
+      "q_a": "Xe máy điện có cần bằng lái không?",
+      "topic_a": "Giao thông",
+      "id_b": 45,
+      "q_b": "Tuổi được cấp bằng lái xe máy A1?",
+      "topic_b": "Giao thông",
+      "jaccard": 0.5,
+      "shared_tokens": [
+        "bằng",
+        "lái",
+        "máy",
+        "xe"
+      ],
+      "cross_topic": false
+    },
+    {
+      "id_a": 17,
+      "q_a": "Bảo hiểm xã hội bắt buộc gồm những chế độ nào?",
+      "topic_a": "Lao động",
+      "id_b": 98,
+      "q_b": "Bảo hiểm y tế bắt buộc gồm những đối tượng nào?",
+      "topic_b": "Hành chính",
+      "jaccard": 0.462,
+      "shared_tokens": [
+        "buộc",
+        "bảo",
+        "bắt",
+        "gồm",
+        "hiểm",
+        "những"
+      ],
+      "cross_topic": true
+    },
+    {
+      "id_a": 70,
+      "q_a": "Năng lực hành vi dân sự của người từ 6 đến 18 tuổi?",
+      "topic_a": "Dân sự",
+      "id_b": 73,
+      "q_b": "Người mất năng lực hành vi dân sự được xác định thế nào?",
+      "topic_b": "Dân sự",
+      "jaccard": 0.462,
+      "shared_tokens": [
+        "dân",
+        "hành",
+        "lực",
+        "năng",
+        "sự",
+        "vi"
+      ],
+      "cross_topic": false
+    },
+    {
+      "id_a": 25,
+      "q_a": "Tài sản chung của vợ chồng được chia khi ly hôn thế nào?",
+      "topic_a": "Hôn nhân & Gia đình",
+      "id_b": 30,
+      "q_b": "Vợ chồng có thể thỏa thuận chia tài sản trong thời kỳ hôn nhân không?",
+      "topic_b": "Hôn nhân & Gia đình",
+      "jaccard": 0.462,
+      "shared_tokens": [
+        "chia",
+        "chồng",
+        "hôn",
+        "sản",
+        "tài",
+        "vợ"
+      ],
+      "cross_topic": false
+    },
+    {
+      "id_a": 87,
+      "q_a": "Vốn điều lệ tối thiểu để thành lập công ty?",
+      "topic_a": "Doanh nghiệp & Thuế",
+      "id_b": 86,
+      "q_b": "Thành lập công ty TNHH cần điều kiện gì?",
+      "topic_b": "Doanh nghiệp & Thuế",
+      "jaccard": 0.455,
+      "shared_tokens": [
+        "công",
+        "lập",
+        "thành",
+        "ty",
+        "điều"
+      ],
+      "cross_topic": false
+    },
+    {
+      "id_a": 41,
+      "q_a": "Xe máy điện có cần bằng lái không?",
+      "topic_a": "Giao thông",
+      "id_b": 39,
+      "q_b": "Bằng lái xe hạng B1 lái được xe gì?",
+      "topic_b": "Giao thông",
+      "jaccard": 0.429,
+      "shared_tokens": [
+        "bằng",
+        "lái",
+        "xe"
+      ],
+      "cross_topic": false
+    },
+    {
+      "id_a": 52,
+      "q_a": "Giết người bị xử lý thế nào?",
+      "topic_a": "Hình sự",
+      "id_b": 60,
+      "q_b": "Buôn lậu bị xử lý ra sao?",
+      "topic_b": "Hình sự",
+      "jaccard": 0.4,
+      "shared_tokens": [
+        "lý",
+        "xử"
+      ],
+      "cross_topic": false
+    },
+    {
+      "id_a": 52,
+      "q_a": "Giết người bị xử lý thế nào?",
+      "topic_a": "Hình sự",
+      "id_b": 57,
+      "q_b": "Hiếp dâm bị xử lý thế nào?",
+      "topic_b": "Hình sự",
+      "jaccard": 0.4,
+      "shared_tokens": [
+        "lý",
+        "xử"
+      ],
+      "cross_topic": false
+    },
+    {
+      "id_a": 83,
+      "q_a": "Thừa kế quyền sử dụng đất thế nào?",
+      "topic_a": "Đất đai",
+      "id_b": 77,
+      "q_b": "Chuyển nhượng quyền sử dụng đất cần điều kiện gì?",
+      "topic_b": "Đất đai",
+      "jaccard": 0.4,
+      "shared_tokens": [
+        "dụng",
+        "quyền",
+        "sử",
+        "đất"
+      ],
+      "cross_topic": false
+    },
+    {
+      "id_a": 10,
+      "q_a": "Hợp đồng lao động có bao nhiêu loại?",
+      "topic_a": "Lao động",
+      "id_b": 20,
+      "q_b": "Hợp đồng lao động có bắt buộc bằng văn bản không?",
+      "topic_b": "Lao động",
+      "jaccard": 0.4,
+      "shared_tokens": [
+        "hợp",
+        "lao",
+        "đồng",
+        "động"
+      ],
+      "cross_topic": false
+    },
+    {
+      "id_a": 2,
+      "q_a": "Người lao động được nghỉ bao nhiêu ngày phép năm?",
+      "topic_a": "Lao động",
+      "id_b": 12,
+      "q_b": "Tuổi nghỉ hưu của lao động nam năm 2024 là bao nhiêu?",
+      "topic_b": "Lao động",
+      "jaccard": 0.4,
+      "shared_tokens": [
+        "lao",
+        "nghỉ",
+        "năm",
+        "động"
+      ],
+      "cross_topic": false
+    },
+    {
+      "id_a": 23,
+      "q_a": "Các trường hợp cấm kết hôn?",
+      "topic_a": "Hôn nhân & Gia đình",
+      "id_b": 21,
+      "q_b": "Độ tuổi kết hôn hợp pháp là bao nhiêu?",
+      "topic_b": "Hôn nhân & Gia đình",
+      "jaccard": 0.375,
+      "shared_tokens": [
+        "hôn",
+        "hợp",
+        "kết"
+      ],
+      "cross_topic": false
+    },
+    {
+      "id_a": 59,
+      "q_a": "Tội tham ô tài sản bị phạt thế nào?",
+      "topic_a": "Hình sự",
+      "id_b": 51,
+      "q_b": "Tội trộm cắp tài sản bị phạt tù bao nhiêu năm?",
+      "topic_b": "Hình sự",
+      "jaccard": 0.375,
+      "shared_tokens": [
+        "sản",
+        "tài",
+        "tội"
+      ],
+      "cross_topic": false
+    },
+    {
+      "id_a": 59,
+      "q_a": "Tội tham ô tài sản bị phạt thế nào?",
+      "topic_a": "Hình sự",
+      "id_b": 53,
+      "q_b": "Tội lừa đảo chiếm đoạt tài sản bị phạt bao nhiêu?",
+      "topic_b": "Hình sự",
+      "jaccard": 0.375,
+      "shared_tokens": [
+        "sản",
+        "tài",
+        "tội"
+      ],
+      "cross_topic": false
+    },
+    {
+      "id_a": 47,
+      "q_a": "Sử dụng điện thoại khi lái xe bị phạt bao nhiêu?",
+      "topic_a": "Giao thông",
+      "id_b": 41,
+      "q_b": "Xe máy điện có cần bằng lái không?",
+      "topic_b": "Giao thông",
+      "jaccard": 0.375,
+      "shared_tokens": [
+        "lái",
+        "xe",
+        "điện"
+      ],
+      "cross_topic": false
+    },
+    {
+      "id_a": 2,
+      "q_a": "Người lao động được nghỉ bao nhiêu ngày phép năm?",
+      "topic_a": "Lao động",
+      "id_b": 15,
+      "q_b": "Có bao nhiêu ngày nghỉ lễ, Tết trong năm?",
+      "topic_b": "Lao động",
+      "jaccard": 0.375,
+      "shared_tokens": [
+        "nghỉ",
+        "ngày",
+        "năm"
+      ],
+      "cross_topic": false
+    },
+    {
+      "id_a": 11,
+      "q_a": "Khi chấm dứt HĐLĐ trái pháp luật, người sử dụng lao động phải bồi thường gì?",
+      "topic_a": "Lao động",
+      "id_b": 5,
+      "q_b": "Người sử dụng lao động có được đơn phương chấm dứt hợp đồng không?",
+      "topic_b": "Lao động",
+      "jaccard": 0.375,
+      "shared_tokens": [
+        "chấm",
+        "dụng",
+        "dứt",
+        "lao",
+        "sử",
+        "động"
+      ],
+      "cross_topic": false
+    },
+    {
+      "id_a": 10,
+      "q_a": "Hợp đồng lao động có bao nhiêu loại?",
+      "topic_a": "Lao động",
+      "id_b": 5,
+      "q_b": "Người sử dụng lao động có được đơn phương chấm dứt hợp đồng không?",
+      "topic_b": "Lao động",
+      "jaccard": 0.364,
+      "shared_tokens": [
+        "hợp",
+        "lao",
+        "đồng",
+        "động"
+      ],
+      "cross_topic": false
+    },
+    {
+      "id_a": 3,
+      "q_a": "Thời giờ làm việc bình thường một ngày là bao nhiêu giờ?",
+      "topic_a": "Lao động",
+      "id_b": 16,
+      "q_b": "Tiền lương làm thêm giờ ngày thường được tính thế nào?",
+      "topic_b": "Lao động",
+      "jaccard": 0.364,
+      "shared_tokens": [
+        "giờ",
+        "làm",
+        "ngày",
+        "thường"
+      ],
+      "cross_topic": false
+    },
+    {
+      "id_a": 76,
+      "q_a": "Đất ở có thời hạn sử dụng bao lâu?",
+      "topic_a": "Đất đai",
+      "id_b": 83,
+      "q_b": "Thừa kế quyền sử dụng đất thế nào?",
+      "topic_b": "Đất đai",
+      "jaccard": 0.333,
+      "shared_tokens": [
+        "dụng",
+        "sử",
+        "đất"
+      ],
+      "cross_topic": false
+    },
+    {
+      "id_a": 52,
+      "q_a": "Giết người bị xử lý thế nào?",
+      "topic_a": "Hình sự",
+      "id_b": 85,
+      "q_b": "Đất lấn chiếm bị xử lý thế nào?",
+      "topic_b": "Đất đai",
+      "jaccard": 0.333,
+      "shared_tokens": [
+        "lý",
+        "xử"
+      ],
+      "cross_topic": true
+    },
+    {
+      "id_a": 84,
+      "q_a": "Chuyển mục đích sử dụng đất cần thủ tục gì?",
+      "topic_a": "Đất đai",
+      "id_b": 77,
+      "q_b": "Chuyển nhượng quyền sử dụng đất cần điều kiện gì?",
+      "topic_b": "Đất đai",
+      "jaccard": 0.333,
+      "shared_tokens": [
+        "chuyển",
+        "dụng",
+        "sử",
+        "đất"
+      ],
+      "cross_topic": false
+    },
+    {
+      "id_a": 54,
+      "q_a": "Cướp tài sản bị xử phạt thế nào?",
+      "topic_a": "Hình sự",
+      "id_b": 59,
+      "q_b": "Tội tham ô tài sản bị phạt thế nào?",
+      "topic_b": "Hình sự",
+      "jaccard": 0.333,
+      "shared_tokens": [
+        "sản",
+        "tài"
+      ],
+      "cross_topic": false
+    },
+    {
+      "id_a": 50,
+      "q_a": "Tai nạn giao thông có được bảo hiểm chi trả không?",
+      "topic_a": "Giao thông",
+      "id_b": 42,
+      "q_b": "Gây tai nạn giao thông chết người bị xử lý thế nào?",
+      "topic_b": "Giao thông",
+      "jaccard": 0.333,
+      "shared_tokens": [
+        "giao",
+        "nạn",
+        "tai",
+        "thông"
+      ],
+      "cross_topic": false
+    },
+    {
+      "id_a": 60,
+      "q_a": "Buôn lậu bị xử lý ra sao?",
+      "topic_a": "Hình sự",
+      "id_b": 57,
+      "q_b": "Hiếp dâm bị xử lý thế nào?",
+      "topic_b": "Hình sự",
+      "jaccard": 0.333,
+      "shared_tokens": [
+        "lý",
+        "xử"
+      ],
+      "cross_topic": false
+    },
+    {
+      "id_a": 45,
+      "q_a": "Tuổi được cấp bằng lái xe máy A1?",
+      "topic_a": "Giao thông",
+      "id_b": 39,
+      "q_b": "Bằng lái xe hạng B1 lái được xe gì?",
+      "topic_b": "Giao thông",
+      "jaccard": 0.333,
+      "shared_tokens": [
+        "bằng",
+        "lái",
+        "xe"
+      ],
+      "cross_topic": false
+    },
+    {
+      "id_a": 75,
+      "q_a": "Giao dịch dân sự bằng lời nói có hiệu lực không?",
+      "topic_a": "Dân sự",
+      "id_b": 68,
+      "q_b": "Đặt cọc trong giao dịch dân sự được quy định thế nào?",
+      "topic_b": "Dân sự",
+      "jaccard": 0.308,
+      "shared_tokens": [
+        "dân",
+        "dịch",
+        "giao",
+        "sự"
+      ],
+      "cross_topic": false
+    }
+  ],
+  "clusters": [
+    {
+      "ids": [
+        95,
+        99
+      ],
+      "questions": [
+        "Xử phạt vi phạm hành chính về thuế thế nào?",
+        "Thời hiệu xử phạt vi phạm hành chính là bao lâu?"
+      ]
+    },
+    {
+      "ids": [
+        39,
+        41,
+        45,
+        47
+      ],
+      "questions": [
+        "Bằng lái xe hạng B1 lái được xe gì?",
+        "Xe máy điện có cần bằng lái không?",
+        "Tuổi được cấp bằng lái xe máy A1?",
+        "Sử dụng điện thoại khi lái xe bị phạt bao nhiêu?"
+      ]
+    },
+    {
+      "ids": [
+        17,
+        98
+      ],
+      "questions": [
+        "Bảo hiểm xã hội bắt buộc gồm những chế độ nào?",
+        "Bảo hiểm y tế bắt buộc gồm những đối tượng nào?"
+      ]
+    },
+    {
+      "ids": [
+        70,
+        73
+      ],
+      "questions": [
+        "Năng lực hành vi dân sự của người từ 6 đến 18 tuổi?",
+        "Người mất năng lực hành vi dân sự được xác định thế nào?"
+      ]
+    },
+    {
+      "ids": [
+        25,
+        30
+      ],
+      "questions": [
+        "Tài sản chung của vợ chồng được chia khi ly hôn thế nào?",
+        "Vợ chồng có thể thỏa thuận chia tài sản trong thời kỳ hôn nhân không?"
+      ]
+    },
+    {
+      "ids": [
+        86,
+        87
+      ],
+      "questions": [
+        "Thành lập công ty TNHH cần điều kiện gì?",
+        "Vốn điều lệ tối thiểu để thành lập công ty?"
+      ]
+    },
+    {
+      "ids": [
+        52,
+        57,
+        60,
+        85
+      ],
+      "questions": [
+        "Giết người bị xử lý thế nào?",
+        "Hiếp dâm bị xử lý thế nào?",
+        "Buôn lậu bị xử lý ra sao?",
+        "Đất lấn chiếm bị xử lý thế nào?"
+      ]
+    },
+    {
+      "ids": [
+        76,
+        77,
+        83,
+        84
+      ],
+      "questions": [
+        "Đất ở có thời hạn sử dụng bao lâu?",
+        "Chuyển nhượng quyền sử dụng đất cần điều kiện gì?",
+        "Thừa kế quyền sử dụng đất thế nào?",
+        "Chuyển mục đích sử dụng đất cần thủ tục gì?"
+      ]
+    },
+    {
+      "ids": [
+        5,
+        10,
+        11,
+        20
+      ],
+      "questions": [
+        "Người sử dụng lao động có được đơn phương chấm dứt hợp đồng không?",
+        "Hợp đồng lao động có bao nhiêu loại?",
+        "Khi chấm dứt HĐLĐ trái pháp luật, người sử dụng lao động phải bồi thường gì?",
+        "Hợp đồng lao động có bắt buộc bằng văn bản không?"
+      ]
+    },
+    {
+      "ids": [
+        2,
+        12,
+        15
+      ],
+      "questions": [
+        "Người lao động được nghỉ bao nhiêu ngày phép năm?",
+        "Tuổi nghỉ hưu của lao động nam năm 2024 là bao nhiêu?",
+        "Có bao nhiêu ngày nghỉ lễ, Tết trong năm?"
+      ]
+    },
+    {
+      "ids": [
+        21,
+        23
+      ],
+      "questions": [
+        "Độ tuổi kết hôn hợp pháp là bao nhiêu?",
+        "Các trường hợp cấm kết hôn?"
+      ]
+    },
+    {
+      "ids": [
+        51,
+        53,
+        54,
+        59
+      ],
+      "questions": [
+        "Tội trộm cắp tài sản bị phạt tù bao nhiêu năm?",
+        "Tội lừa đảo chiếm đoạt tài sản bị phạt bao nhiêu?",
+        "Cướp tài sản bị xử phạt thế nào?",
+        "Tội tham ô tài sản bị phạt thế nào?"
+      ]
+    },
+    {
+      "ids": [
+        3,
+        16
+      ],
+      "questions": [
+        "Thời giờ làm việc bình thường một ngày là bao nhiêu giờ?",
+        "Tiền lương làm thêm giờ ngày thường được tính thế nào?"
+      ]
+    },
+    {
+      "ids": [
+        42,
+        50
+      ],
+      "questions": [
+        "Gây tai nạn giao thông chết người bị xử lý thế nào?",
+        "Tai nạn giao thông có được bảo hiểm chi trả không?"
+      ]
+    },
+    {
+      "ids": [
+        68,
+        75
+      ],
+      "questions": [
+        "Đặt cọc trong giao dịch dân sự được quy định thế nào?",
+        "Giao dịch dân sự bằng lời nói có hiệu lực không?"
+      ]
+    }
+  ]
+}
