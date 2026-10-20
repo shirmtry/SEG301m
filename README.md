@@ -1,2 +1,0 @@
-# SEG301m
-TAO LÀ HUYTKING
