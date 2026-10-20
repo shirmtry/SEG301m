@@ -6,7 +6,7 @@
 ![Qwen](https://img.shields.io/badge/Qwen2.5--3B-Instruct-purple)
 
 ## 📖 Tổng quan dự án
-Đây là một hệ thống Chatbot chuyên về tư vấn pháp luật Việt Nam, được xây dựng dựa trên kiến trúc **RAG (Retrieval-Augmented Generation - Truy xuất và Tăng cường Sinh)**. 
+Đây là một hệ thống Chatbot chuyên về tư vấn pháp luật Việt Nam, được xây dựng dựa trên kiến trúc **RAG (Retrieval-Augmented Generation - Truy xuất và Tăng cường Sinh)**.
 
 Thay vì để mô hình ngôn ngữ tự do "sáng tạo" (dẫn đến ảo giác/hallucination), hệ thống này sẽ tìm kiếm các văn bản pháp luật liên quan nhất trong cơ sở dữ liệu nội bộ, sau đó yêu cầu LLM chỉ trả lời dựa trên chính xác các văn bản đó và phải trích dẫn nguồn (Số hiệu, Điều, Khoản).
 
@@ -32,40 +32,37 @@ Thay vì để mô hình ngôn ngữ tự do "sáng tạo" (dẫn đến ảo gi
 ### 1. Yêu cầu hệ thống
 - Python 3.10 trở lên.
 - RAM: Tối thiểu 8GB (Khuyến nghị 16GB).
-- Dung lượng trống: ~5GB (cho model và index).
+- Dung lượng trống: ~6GB (cho code, model và index).
 
-### 2. Cài đặt môi trường
+### 2. Tải Source Code
 ```bash
-# Clone dự án
 git clone https://github.com/shirmtry/SEG301m.git
 cd SEG301m
-
-# Tạo môi trường ảo (khuyến nghị)
-python -m venv venv
-# Kích hoạt môi trường (Windows)
-.\venv\Scripts\activate
-# (Mac/Linux: source venv/bin/activate)
-
-# Cài đặt thư viện
-pip install -r requirements.txt
 ```
 
-### 3. Tải Model (Bắt buộc)
-Do model quá nặng, chúng không được lưu trên GitHub. Bạn cần tải chúng về máy:
-
-**Tải LLM (Qwen2.5-3B-Instruct):**
+### 3. Cài đặt tự động (Khuyên dùng)
+Chúng tôi đã tích hợp sẵn script tự động cài đặt toàn bộ thư viện và tải model Embedding (BGE-M3).
+Chỉ cần mở Terminal tại thư mục dự án và chạy:
 ```bash
-huggingface-cli download Qwen/Qwen2.5-3B-Instruct-GGUF qwen2.5-3b-instruct-q4_k_m.gguf --local-dir qwen_model
-```
-**Tải Embedding Model (BGE-M3):**
-```bash
-huggingface-cli download BAAI/bge-m3 --local-dir models/bge-m3
+python setup_env.py
 ```
 
-### 4. Tải Dữ liệu Vector (FAISS Index)
-Do file index (`legal_v2.index` ~1.4GB) vượt quá giới hạn GitHub, bạn hãy tải file nén từ link Google Drive/HuggingFace dưới đây và giải nén vào thư mục `processed/`:
-- 📥 **[Đang cập nhật link tải Index]**
-*(Cấu trúc thư mục yêu cầu: `processed/legal_v2.index` và `processed/legal_meta_v2.json`)*
+### 4. Tải Dữ liệu & Mô hình (Bắt buộc)
+Do dung lượng quá lớn vượt giới hạn GitHub, bạn **BẮT BUỘC** phải tải thủ công 2 thành phần sau:
+
+**a) LLM Generation (Qwen2.5-3B-GGUF):**
+Tải file `qwen2.5-3b-instruct-q4_k_m.gguf` (khoảng 1.9GB) từ Hugging Face và bỏ vào thư mục `qwen_model/`.
+- 📥 **Link tải Qwen:** [Tải Qwen2.5-3B-Instruct-GGUF](https://huggingface.co/Qwen/Qwen2.5-3B-Instruct-GGUF/tree/main) (Tìm file `qwen2.5-3b-instruct-q4_k_m.gguf`)
+*(Hoặc chạy lệnh: `huggingface-cli download Qwen/Qwen2.5-3B-Instruct-GGUF qwen2.5-3b-instruct-q4_k_m.gguf --local-dir qwen_model`)*
+
+**b) Cơ sở dữ liệu Vector (FAISS Index & Metadata):**
+Tải file nén `legal_data.zip` (khoảng 2.4GB) chứa `legal_v2.index` và `legal_meta_v2.json` từ link dưới đây:
+- 📥 **[DÁN LINK MEDIAFIRE CỦA BẠN VÀO ĐÂY - VD: https://www.mediafire.com/file/.../legal_data.zip]**
+
+**Hướng dẫn cài đặt Data:**
+1. Tải file `legal_data.zip` từ link MediaFire.
+2. Giải nén, bạn sẽ nhận được 2 file: `legal_v2.index` và `legal_meta_v2.json`.
+3. Tạo thư mục `processed/` (nếu chưa có) và copy 2 file này vào trong đó.
 
 ---
 
@@ -96,11 +93,12 @@ python test_case.py
 ├── ask.py                  # Giao diện Chat trên Terminal
 ├── test_case.py            # Script chạy Test 100 câu hỏi & xuất báo cáo
 ├── build_index.py          # Script tạo Vector DB (FAISS) từ dữ liệu thô
+├── setup_env.py            # Script tự động cài đặt thư viện và tải model BGE-M3
 ├── test_cases_100.json     # Bộ 100 câu hỏi đánh giá hệ thống
 ├── requirements.txt        # Danh sách các thư viện cần thiết
-├── processed/              # Chứa FAISS Index và Metadata (Không up lên Git)
-├── models/                 # Chứa Embedding model BGE-M3 (Không up lên Git)
-└── qwen_model/             # Chứa LLM Qwen GGUF (Không up lên Git)
+├── processed/              # Chứa FAISS Index và Metadata (Tải từ MediaFire)
+├── models/                 # Chứa Embedding model BGE-M3 (Tự động tải)
+└── qwen_model/             # Chứa LLM Qwen GGUF (Tải từ Hugging Face)
 ```
 
 ---
