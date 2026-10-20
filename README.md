@@ -13,9 +13,9 @@ Thay vì để mô hình ngôn ngữ tự do "sáng tạo" (dẫn đến ảo gi
 **Lĩnh vực trọng tâm:** Dữ liệu hiện tại tập trung cực kỳ đồ sộ vào các mảng **Tài chính, Thuế, Phí, Ngân sách, Giao thông Đường bộ, Hàng hải và Hàng không**.
 
 ## 📚 Tài liệu & Báo cáo Đánh giá (Dành cho Giảng viên)
-- 📄 **[BÁO CÁO ĐÁNH GIÁ HỆ THỐNG (FINAL REPORT)](./report_assets/DEMO_FINAL_REPORT.md)**
+- 📄 **[BÁO CÁO ĐÁNH GIÁ HỆ THỐNG](./report_assets/DEMO_FINAL_REPORT.md)**
   *(Nhấp vào link trên để xem chi tiết quá trình phân tích dữ liệu, kiến trúc, kết quả test 100 câu và đánh giá ưu/nhược điểm).*
-- 📊 **[File kết quả Test 100 câu (BAO_CAO_TEST.csv)](./report_assets/BAO_CAO_TEST.csv)**
+- 📊 **[File kết quả Test 100 câu](./report_assets/BAO_CAO_TEST.csv)**
   *(Xem chi tiết từng câu hỏi, câu trả lời của Bot và nguồn trích dẫn).*
 
 ## 🚀 Tính năng nổi bật
