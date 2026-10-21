@@ -3,61 +3,47 @@
 ![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.30%2B-red)
 ![FAISS](https://img.shields.io/badge/FAISS-Vector_DB-green)
+![BM25](https://img.shields.io/badge/BM25-Hybrid_Search-orange)
 ![Qwen](https://img.shields.io/badge/Qwen2.5--3B-Instruct-purple)
 
 ## 📖 Tổng quan dự án
-Đây là một hệ thống Chatbot chuyên về tư vấn pháp luật Việt Nam, được xây dựng dựa trên kiến trúc **RAG (Retrieval-Augmented Generation - Truy xuất và Tăng cường Sinh)**.
+Đây là một hệ thống Chatbot chuyên về tư vấn pháp luật Việt Nam, được xây dựng dựa trên kiến trúc **Advanced RAG (Retrieval-Augmented Generation)**. 
 
-Thay vì để mô hình ngôn ngữ tự do "sáng tạo" (dẫn đến ảo giác/hallucination), hệ thống này sẽ tìm kiếm các văn bản pháp luật liên quan nhất trong cơ sở dữ liệu nội bộ, sau đó yêu cầu LLM chỉ trả lời dựa trên chính xác các văn bản đó và phải trích dẫn nguồn (Số hiệu, Điều, Khoản).
+Hệ thống giải quyết bài toán "ảo giác" (hallucination) bằng cách truy xuất các Điều luật chính xác từ cơ sở dữ liệu nội bộ trước khi sinh câu trả lời. Điểm đặc biệt là hệ thống được tối ưu hóa để chạy **hoàn toàn Local trên CPU**, không yêu cầu GPU đắt tiền hay API trả phí.
 
-**Lĩnh vực trọng tâm:** Dữ liệu hiện tại tập trung cực kỳ đồ sộ vào các mảng **Tài chính, Thuế, Phí, Ngân sách, Giao thông Đường bộ, Hàng hải và Hàng không**.
+**Dữ liệu trọng tâm:** 7.868 Điều luật cốt lõi trích xuất từ 52 Bộ luật/Luật quan trọng nhất của Việt Nam (Dân sự, Hình sự, Hôn nhân, Đất đai, Doanh nghiệp, Tố tụng...), đã được cập nhật theo Văn bản hợp nhất (VBHN) 2025.
 
 ## 📚 Tài liệu & Báo cáo Đánh giá (Dành cho Giảng viên)
 - 📄 **[BÁO CÁO ĐÁNH GIÁ HỆ THỐNG](./report_assets/DEMO_FINAL_REPORT.md)**
-  *(Nhấp vào link trên để xem chi tiết quá trình phân tích dữ liệu, kiến trúc, kết quả test 100 câu và đánh giá ưu/nhược điểm).*
-- 📊 **[File kết quả Test 100 câu](./report_assets/BAO_CAO_TEST.csv)**
-  *(Xem chi tiết từng câu hỏi, câu trả lời của Bot và nguồn trích dẫn).*
+  *(Chi tiết quá trình phân tích, kiến trúc, kết quả test 100 câu và đánh giá ưu/nhược điểm).*
+- 📊 **[File kết quả Test 100 câu](./demo_results.csv)**
+  *(Xem chi tiết từng câu hỏi, câu trả lời của Bot, thời gian phản hồi và nguồn trích dẫn).*
 
 ## 🚀 Tính năng nổi bật
-- **Zero Hallucination (Chống ảo giác):** Từ chối trả lời nếu không tìm thấy thông tin trong cơ sở dữ liệu.
-- **Trích dẫn nguồn minh bạch:** Luôn hiển thị số hiệu văn bản, tiêu đề và các điều khoản liên quan.
-- **Giao diện Web hiện đại:** Xây dựng bằng Streamlit với khả năng streaming (in chữ ra từng từ) giúp giảm cảm giác chờ đợi.
-- **Tối ưu hóa Local:** Chạy hoàn toàn trên máy cá nhân (CPU) thông qua định dạng GGUF lượng tử hóa (Q4_K_M), không cần GPU đắt tiền hay API tốn phí.
+- **Zero Hallucination (Chống ảo giác):** Từ chối trả lời nếu không tìm thấy thông tin trong cơ sở dữ liệu (Tỷ lệ từ chối 100% đối với câu hỏi bẫy).
+- **Smart Filter (Regex):** Tự động nhận diện Tên Luật + Số Điều (VD: "Điều 33 Luật Hôn nhân") để tìm kiếm chính xác tuyệt đối.
+- **Hybrid Search & Reranker:** Kết hợp tìm kiếm từ khóa (BM25) và ngữ nghĩa (FAISS), sau đó dùng mô hình Reranker để chọn ra 5 điều luật tinh túy nhất.
+- **Trích dẫn nguồn minh bạch:** Luôn hiển thị số hiệu văn bản, tiêu đề Điều luật và thời gian phản hồi.
+- **Giao diện Web Streamlit:** Chia 2 cột (Thư viện luật & Khung chat), hỗ trợ streaming chữ.
 
 ## 🏗️ Kiến trúc hệ thống (Pipeline)
-1. **Dữ liệu (Data):** 351.986 chunks văn bản luật, được làm sạch và phân mảnh.
-2. **Embedding:** Sử dụng mô hình SOTA `BAAI/bge-m3` (1024 chiều) để vector hóa văn bản.
-3. **Vector Database:** Sử dụng `FAISS` (Facebook AI Similarity Search) để tìm kiếm ngữ nghĩa siêu tốc.
-4. **LLM Generation:** Mô hình `Qwen2.5-3B-Instruct` (định dạng GGUF) chạy local qua thư viện `llama-cpp-python`.
-
----
-
-## 📊 Phân tích Cơ sở Dữ liệu
-Dựa trên quá trình phân tích file `legal_meta_v2.json`, dữ liệu của hệ thống tập trung cực kỳ đồ sộ vào các mảng Tài chính, Thuế và Giao thông. Dưới đây là các biểu đồ thống kê dữ liệu:
-
-<p align="center">
-  <img src="./report_assets/top_linh_vuc.png" width="48%" />
-  <img src="./report_assets/loai_van_ban.png" width="48%" />
-</p>
-<p align="center">
-  <img src="./report_assets/chunk_length.png" width="60%" />
-</p>
+1. **Dữ liệu (Data):** Gộp thành **7.868 Điều luật** hoàn chỉnh (giữ nguyên vẹn ngữ cảnh).
+2. **Embedding:** Mô hình tối ưu tiếng Việt `keepitreal/vietnamese-sbert` (768 chiều).
+3. **Vector Database:** `FAISS` kết hợp `BM25` (Hybrid Search).
+4. **Reranker:** Mô hình `BAAI/bge-reranker-base`.
+5. **LLM Generation:** Mô hình `Qwen2.5-3B-Instruct` (GGUF Q4_K_M) chạy local qua `llama-cpp-python`.
 
 ---
 
 ## 🎯 Đánh giá Hiệu năng Hệ thống
-Hệ thống được đánh giá tự động trên bộ **100 câu hỏi test** trải đều 8 nhóm ngành luật. Kết quả cho thấy hệ thống đạt độ chính xác cao và khả năng chống ảo giác tuyệt đối.
+Hệ thống được đánh giá tự động trên bộ **100 câu hỏi test** trải đều các nhóm ngành luật và 10 câu hỏi bẫy.
 
 <p align="center">
   <img src="./report_assets/ty_le_tra_loi.png" width="45%" />
-  <img src="./report_assets/bieu_do_pho_diem.png" width="45%" />
+  <img src="./report_assets/phan_bo_thoi_gian.png" width="45%" />
 </p>
 <p align="center">
-  <img src="./report_assets/bieu_do_diem_vs_thoigian.png" width="80%" />
-</p>
-<p align="center">
-  <img src="./report_assets/bieu_do_so_sanh_diem.png" width="48%" />
-  <img src="./report_assets/phan_bo_thoi_gian.png" width="48%" />
+  <img src="./report_assets/tuong_quan_thoi_gian.png" width="80%" />
 </p>
 <p align="center">
   <img src="./report_assets/top_van_ban.png" width="70%" />
@@ -69,8 +55,8 @@ Hệ thống được đánh giá tự động trên bộ **100 câu hỏi test*
 
 ### 1. Yêu cầu hệ thống
 - Python 3.10 trở lên.
-- RAM: Tối thiểu 8GB (Khuyến nghị 16GB).
-- Dung lượng trống: ~6GB (cho code, model và index).
+- RAM: Tối thiểu 8GB.
+- Dung lượng trống: ~4GB (cho code, model và index).
 
 ### 2. Tải Source Code
 ```bash
@@ -79,39 +65,20 @@ cd SEG301m
 ```
 
 ### 3. Tạo Môi trường ảo (Virtual Environment) & Cài đặt Thư viện
-Để tránh xung đột thư viện với máy tính, bạn nên tạo môi trường ảo:
-
-**Trên Windows:**
 ```bash
 python -m venv venv
-venv\Scripts\activate
-```
-
-**Trên macOS/Linux:**
-```bash
-python3 -m venv venv
-source venv/bin/activate
-```
-
-Sau khi môi trường ảo đã được kích hoạt (có chữ `(venv)` ở đầu dòng lệnh), tiến hành cài đặt các thư viện cần thiết:
-```bash
+venv\Scripts\activate  # Trên Windows
+# source venv/bin/activate  # Trên macOS/Linux
 pip install -r requirements.txt
 ```
-*(Lưu ý: Quá trình cài đặt `llama-cpp-python` có thể mất vài phút tùy thuộc vào cấu hình máy).*
 
-### 4. Tải Model Embedding (Bắt buộc)
-Sau khi cài xong thư viện, chạy script tự động để tải model Embedding `BAAI/bge-m3`:
-```bash
-python setup_env.py
-```
-
-### 5. Tải Dữ liệu & Mô hình LLM (Bắt buộc)
-Do dung lượng quá lớn vượt giới hạn GitHub, bạn **BẮT BUỘC** phải tải thủ công 2 thành phần từ thư mục lưu trữ dưới đây:
+### 4. Tải Dữ liệu & Mô hình (Bắt buộc)
+Do dung lượng vượt giới hạn GitHub, bạn **BẮT BUỘC** phải tải thủ công 2 thành phần từ thư mục lưu trữ dưới đây:
 - 📥 **Link thư mục chứa Data & Model:** **[MediaFire - DATA + MODEL HTK](https://www.mediafire.com/folder/2iiyg8ix6vx1y/DATA_%2B_MODEL_HTK)**
 
 **Hướng dẫn cài đặt:**
-1. Truy cập link MediaFire trên, tải file `legal_data.zip` và thư mục `qwen_model`.
-2. Giải nén `legal_data.zip`, bạn sẽ nhận được 2 file: `legal_v2.index` và `legal_meta_v2.json`. Copy 2 file này vào thư mục `processed/` của dự án.
+1. Tải file `legal_data.zip` và thư mục `qwen_model`.
+2. Giải nén `legal_data.zip`, bạn sẽ nhận được file `legal_merged.jsonl` và thư mục `faiss_index_new`. Copy chúng vào thư mục gốc của dự án.
 3. Copy file `qwen2.5-3b-instruct-q4_k_m.gguf` vào thư mục `qwen_model/` của dự án.
 
 ---
@@ -120,14 +87,14 @@ Do dung lượng quá lớn vượt giới hạn GitHub, bạn **BẮT BUỘC** 
 
 ### Chạy giao diện Web (Streamlit)
 ```bash
-streamlit run app.py
+python -m streamlit run app.py
 ```
 Trình duyệt sẽ tự động mở tại `http://localhost:8501`. Gõ câu hỏi và xem kết quả kèm nguồn trích dẫn.
 
 ### Chạy Bài Test Đánh Giá (Dành cho Báo cáo)
-Script này sẽ chạy 100 câu hỏi mẫu, đo thời gian phản hồi và xuất ra file `BAO_CAO_TEST.csv`:
+Script này sẽ chạy 100 câu hỏi mẫu, đo thời gian phản hồi và xuất ra file `demo_results.csv`:
 ```bash
-python test_case.py
+python code-htk/run_tests.py
 ```
 
 ---
@@ -135,24 +102,24 @@ python test_case.py
 ## 📂 Cấu trúc thư mục
 ```text
 ├── app.py                  # Giao diện Web Streamlit
-├── test_case.py            # Script chạy Test 100 câu hỏi & xuất báo cáo
-├── build_index.py          # Script tạo Vector DB (FAISS) từ dữ liệu thô
-├── setup_env.py            # Script tự động tải model BGE-M3
-├── test_cases_100.json     # Bộ 100 câu hỏi đánh giá hệ thống
-├── requirements.txt        # Danh sách các thư viện cần thiết
-├── report_assets/          # Thư mục chứa Báo cáo (.md), file CSV kết quả và các biểu đồ (.png)
-├── processed/              # Chứa FAISS Index và Metadata (Tải từ MediaFire)
-├── models/                 # Chứa Embedding model BGE-M3 (Tự động tải qua setup_env.py)
-└── qwen_model/             # Chứa LLM Qwen GGUF (Tải từ MediaFire)
+├── code-htk/
+│   ├── run_tests.py        # Script chạy Test 100 câu hỏi
+│   └── visualize_report.py # Script vẽ biểu đồ đánh giá
+├── legal_merged.jsonl      # Cơ sở dữ liệu 7.868 Điều luật
+├── faiss_index_new/        # Thư mục chứa FAISS Index
+├── qwen_model/             # Chứa LLM Qwen GGUF
+├── report_assets/          # Chứa Báo cáo (.md) và các biểu đồ (.png)
+├── demo_results.csv        # Kết quả test 100 câu
+└── requirements.txt        # Danh sách các thư viện cần thiết
 ```
 
 ---
 
 ## ⚠️ Hạn chế & Hướng phát triển
-1. **Tốc độ trên CPU:** Qwen 3B chạy trên CPU mất khoảng trung bình **24-26 giây/câu** (do không có GPU). Nếu có GPU hoặc sử dụng vLLM, tốc độ có thể giảm xuống dưới 3 giây.
-2. **Vấn đề Luật cũ/Luật mới:** Dữ liệu chứa cả luật đã hết hiệu lực và luật mới. Hệ thống đã có cơ chế ưu tiên văn bản mới hơn, nhưng đôi khi vẫn có thể nhầm lẫn (cần thêm module lọc theo năm ban hành).
-3. **Lỗi cấu trúc bảng biểu:** Các câu hỏi về "Mức phạt tiền" giao thông đôi khi bị trượt do bước chunking làm vỡ cấu trúc bảng của Nghị định. Cần nâng cấp lên Semantic Chunking hoặc Table-aware Chunking trong tương lai.
-4. **Mở rộng dữ liệu:** Có thể bổ sung thêm các ngành luật khác như Hình sự, Dân sự, Đất đai (hiện tại đang tập trung vào Thuế và Giao thông).
+1. **Tốc độ trên CPU:** Qwen 3B chạy trên CPU mất khoảng trung bình **47.11 giây/câu** (do không có GPU). Nếu có GPU hoặc sử dụng vLLM, tốc độ có thể giảm xuống dưới 3 giây.
+2. **Thiếu hụt văn bản dưới luật:** Hệ thống thiếu các Nghị định xử phạt (Giao thông, Môi trường), dẫn đến việc không trả lời được các câu hỏi về mức phạt cụ thể.
+3. **Bộ lọc Regex quá khắt khe:** Nếu người dùng hỏi "Điều 123" nhưng văn bản ghi "Điều 123a", hệ thống có thể bỏ sót.
+4. **Mở rộng dữ liệu:** Có thể bổ sung thêm các Nghị định, Thông tư để tăng độ phủ của Chatbot.
 
 ---
 
