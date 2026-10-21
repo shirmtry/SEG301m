@@ -78,14 +78,34 @@ git clone https://github.com/shirmtry/SEG301m.git
 cd SEG301m
 ```
 
-### 3. Cài đặt tự động (Khuyên dùng)
-Chúng tôi đã tích hợp sẵn script tự động cài đặt toàn bộ thư viện và tải model Embedding (BGE-M3).
-Chỉ cần mở Terminal tại thư mục dự án và chạy:
+### 3. Tạo Môi trường ảo (Virtual Environment) & Cài đặt Thư viện
+Để tránh xung đột thư viện với máy tính, bạn nên tạo môi trường ảo:
+
+**Trên Windows:**
+```bash
+python -m venv venv
+venv\Scripts\activate
+```
+
+**Trên macOS/Linux:**
+```bash
+python3 -m venv venv
+source venv/bin/activate
+```
+
+Sau khi môi trường ảo đã được kích hoạt (có chữ `(venv)` ở đầu dòng lệnh), tiến hành cài đặt các thư viện cần thiết:
+```bash
+pip install -r requirements.txt
+```
+*(Lưu ý: Quá trình cài đặt `llama-cpp-python` có thể mất vài phút tùy thuộc vào cấu hình máy).*
+
+### 4. Tải Model Embedding (Bắt buộc)
+Sau khi cài xong thư viện, chạy script tự động để tải model Embedding `BAAI/bge-m3`:
 ```bash
 python setup_env.py
 ```
 
-### 4. Tải Dữ liệu & Mô hình (Bắt buộc)
+### 5. Tải Dữ liệu & Mô hình LLM (Bắt buộc)
 Do dung lượng quá lớn vượt giới hạn GitHub, bạn **BẮT BUỘC** phải tải thủ công 2 thành phần từ thư mục lưu trữ dưới đây:
 - 📥 **Link thư mục chứa Data & Model:** **[MediaFire - DATA + MODEL HTK](https://www.mediafire.com/folder/2iiyg8ix6vx1y/DATA_%2B_MODEL_HTK)**
 
@@ -117,21 +137,22 @@ python test_case.py
 ├── app.py                  # Giao diện Web Streamlit
 ├── test_case.py            # Script chạy Test 100 câu hỏi & xuất báo cáo
 ├── build_index.py          # Script tạo Vector DB (FAISS) từ dữ liệu thô
-├── setup_env.py            # Script tự động cài đặt thư viện và tải model BGE-M3
+├── setup_env.py            # Script tự động tải model BGE-M3
 ├── test_cases_100.json     # Bộ 100 câu hỏi đánh giá hệ thống
-├── report_assets/          # Thư mục chứa Báo cáo (.md), file CSV kết quả và các biểu đồ (.png)
 ├── requirements.txt        # Danh sách các thư viện cần thiết
+├── report_assets/          # Thư mục chứa Báo cáo (.md), file CSV kết quả và các biểu đồ (.png)
 ├── processed/              # Chứa FAISS Index và Metadata (Tải từ MediaFire)
-├── models/                 # Chứa Embedding model BGE-M3 (Tự động tải)
+├── models/                 # Chứa Embedding model BGE-M3 (Tự động tải qua setup_env.py)
 └── qwen_model/             # Chứa LLM Qwen GGUF (Tải từ MediaFire)
 ```
 
 ---
 
 ## ⚠️ Hạn chế & Hướng phát triển
-1. **Tốc độ trên CPU:** Qwen 3B chạy trên CPU mất khoảng 10-15 giây/câu. Nếu có GPU, tốc độ có thể giảm xuống dưới 2 giây.
+1. **Tốc độ trên CPU:** Qwen 3B chạy trên CPU mất khoảng trung bình **24-26 giây/câu** (do không có GPU). Nếu có GPU hoặc sử dụng vLLM, tốc độ có thể giảm xuống dưới 3 giây.
 2. **Vấn đề Luật cũ/Luật mới:** Dữ liệu chứa cả luật đã hết hiệu lực và luật mới. Hệ thống đã có cơ chế ưu tiên văn bản mới hơn, nhưng đôi khi vẫn có thể nhầm lẫn (cần thêm module lọc theo năm ban hành).
-3. **Mở rộng dữ liệu:** Có thể bổ sung thêm các ngành luật khác như Hình sự, Dân sự, Đất đai (hiện tại đang tập trung vào Thuế và Giao thông).
+3. **Lỗi cấu trúc bảng biểu:** Các câu hỏi về "Mức phạt tiền" giao thông đôi khi bị trượt do bước chunking làm vỡ cấu trúc bảng của Nghị định. Cần nâng cấp lên Semantic Chunking hoặc Table-aware Chunking trong tương lai.
+4. **Mở rộng dữ liệu:** Có thể bổ sung thêm các ngành luật khác như Hình sự, Dân sự, Đất đai (hiện tại đang tập trung vào Thuế và Giao thông).
 
 ---
 
