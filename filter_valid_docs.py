@@ -1,55 +1,60 @@
 import json
-from collections import Counter
 import re
+import os
 
-INPUT = r"C:\Users\dinht\Downloads\Bo_Cai_Chatbot_Luat\legal_merged_v2_FINAL.jsonl"
+FILES = [
+    r"C:\Users\dinht\Downloads\Bo_Cai_Chatbot_Luat\legal_merged.jsonl",
+]
 
-# Regex bắt số hiệu văn bản (VD: 52/1999/NĐ-CP, 15/1998/NĐ-CP)
-PATTERN = re.compile(
-    r"(?:Nghị định|Thông tư|Quyết định|Luật)\s*(?:số\s*)?"
-    r"([0-9]{1,4}[-/][0-9]{4}[-/][A-ZĐ0-9/-]+|[0-9]{1,4}[-/][A-ZĐ0-9/-]+)",
-    re.IGNORECASE
-)
+# Dấu hiệu CHẮC CHẮN của luật cũ (không thể có trong Luật 2024)
+OLD_SIGNS = [
+    (r"Điều\s+2\.1\.1", "Cấu trúc 'Điều 2.1.1' (cách ghi cũ)"),
+    (r"3\.500\s*kg", "Ngưỡng '3.500 kg' (đã bỏ trong luật mới)"),
+    (r"điểm\s+[a-zđ]\s+và\s+[a-zđ]\s+của\s+Điều", "Cách viện dẫn 'điểm x và y của Điều' (cũ)"),
+    (r"hạng\s+B2\s+cấp\s+cho", "Câu định nghĩa 'B2 cấp cho' (cũ)"),
+]
 
-# Đếm theo năm ban hành
-year_counter = Counter()
-items_by_year = {}
+PATTERNS = [(re.compile(p, re.IGNORECASE), label) for p, label in OLD_SIGNS]
 
-with open(INPUT, "r", encoding="utf-8") as f:
-    for line in f:
-        data = json.loads(line)
-        title = data.get("metadata", {}).get("title", "")
-        match = PATTERN.search(title)
-        if not match:
-            continue
-        num = match.group(1)
-        # Tìm năm (4 chữ số)
-        year_match = re.search(r"(\d{4})", num)
-        if not year_match:
-            continue
-        year = int(year_match.group(1))
-        year_counter[year] += 1
-        items_by_year.setdefault(year, []).append(title[:150])
-
-# In báo cáo
-print("=" * 80)
-print("📊 THỐNG KÊ VĂN BẢN THEO NĂM BAN HÀNH")
-print("=" * 80)
-
-# Sắp xếp năm tăng dần
-for year in sorted(year_counter.keys()):
-    count = year_counter[year]
-    if year <= 2010:  # Chỉ quan tâm văn bản cũ
-        print(f"\n🔥 Năm {year}: {count:,} chunks")
-        # In tối đa 5 văn bản mỗi năm để check
-        unique = list(set(items_by_year[year]))[:5]
-        for title in unique:
-            print(f"   - {title}")
-
-# Tổng kết
-total_old = sum(c for y, c in year_counter.items() if y <= 2010)
-total_all = sum(year_counter.values())
-print("\n" + "=" * 80)
-print(f"📈 TỔNG: {total_all:,} chunks có số hiệu")
-print(f"⚠️  Văn bản trước 2010: {total_old:,} chunks ({total_old/total_all*100:.1f}%)")
-print("=" * 80)
+for filepath in FILES:
+    print(f"\n{'='*75}")
+    print(f"📁 {os.path.basename(filepath)}")
+    print('='*75)
+    
+    if not os.path.exists(filepath):
+        print("  ⚠️  File không tồn tại, bỏ qua")
+        continue
+    
+    suspects = []
+    total = 0
+    with open(filepath, "r", encoding="utf-8") as f:
+        for i, line in enumerate(f):
+            total += 1
+            data = json.loads(line)
+            title = data.get("metadata", {}).get("title", "")
+            text = data.get("text", "")
+            
+            for pat, label in PATTERNS:
+                match = pat.search(text)
+                if match:
+                    suspects.append({
+                        "line": i + 1,
+                        "title": title[:130],
+                        "label": label,
+                        "match": match.group(0)[:80],
+                        "text_preview": text[:250].replace("\n", " | ")
+                    })
+                    break
+    
+    print(f"📊 Tổng chunks: {total:,}")
+    print(f"⚠️  Nghi vấn: {len(suspects)} chunks\n")
+    
+    for s in suspects[:30]:
+        print(f"--- Line {s['line']} | {s['label']} ---")
+        print(f"  Title: {s['title']}")
+        print(f"  Match: ...{s['match']}...")
+        print(f"  Text : {s['text_preview']}...")
+        print()
+    
+    if len(suspects) > 30:
+        print(f"... (còn {len(suspects)-30} chunk nữa không in)")
