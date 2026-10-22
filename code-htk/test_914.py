@@ -1,8 +1,9 @@
-"""test_914.py — Test 914 câu tự động, resume được, ghi CSV ngay.
-   Sinh 457 from_data + 274 trap + 183 edge = 914 câu.
+"""test_914.py — Test 914 câu tự động, resume được, ghi CSV chuẩn (QUOTE_ALL).
+   Sinh 914 câu MỚI, loại trừ câu đã hỏi trong CSV cũ.
    Chạy: python code-htk/test_914.py
-   Resume: chạy lại cùng lệnh, tự skip câu đã có trong CSV mới nhất.
+   Resume: chạy lại cùng lệnh → tự skip câu đã có trong CSV mới nhất.
 """
+import csv
 import json
 import re
 import time
@@ -29,7 +30,7 @@ OUTPUT_DIR = BASE_DIR / "test_results"
 OUTPUT_DIR.mkdir(exist_ok=True)
 TARGET_TOTAL = 914
 
-# ─── LAW_KEYWORDS + title_matches_law (copy y hệt v8) ───
+# ─── LAW_KEYWORDS + title_matches_law ───
 LAW_KEYWORDS = {
     "Hình sự": ["hình sự", "tội phạm", "truy cứu", "tnhs"],
     "Tố tụng hình sự": ["tố tụng hình sự", "bltths", "điều tra", "khởi tố"],
@@ -162,9 +163,7 @@ def has_fake_citation(a, n):
     return any(int(x) > n for x in re.findall(r"\[(\d+)\]", a))
 
 
-# FIX 1: Phát hiện model dùng [N] như số điều/khoản
 def has_citation_misuse(text):
-    """Phát hiện model dùng [N] như số điều/khoản (VD: 'Điều [2]', 'số [2] của')."""
     patterns = [
         r"Điều\s+\[\d+\]",
         r"khoản\s+\[\d+\]",
@@ -194,7 +193,6 @@ def is_uncited_answer(a, sources):
     return not bool(re.search(r"\[\d+\]", a))
 
 
-# FIX 2: Hạ ngưỡng từ 150 → 60 để bắt mid_refusal sớm hơn
 def has_mid_refusal(text):
     low = text.lower()
     marker = "không tìm thấy thông tin này"
@@ -234,17 +232,15 @@ def load_engine():
     return ens, llm, docs
 
 
-# ─── RETRIEVE (copy y hệt v8) ───
+# ─── RETRIEVE ───
 def retrieve_advanced(retriever, question, all_docs, k=5):
     ql = question.lower()
     dieu = re.findall(r"[Đđ]iều\s+(\d+)", question)
     law_kw = detect_law_keywords(question)
-
     is_minor = (
         ("chưa thành niên" in ql or "vị thành niên" in ql or "dưới 18" in ql)
         and any(w in ql for w in ["phạm tội", "hình sự", "truy cứu", "trách nhiệm hình sự"])
     )
-
     if is_minor:
         minor = [d for d in all_docs
                  if "Bộ luật Hình sự" in d.metadata.get("title", "")
@@ -298,79 +294,197 @@ def generate_one(llm, question, contexts):
     return out["choices"][0]["text"]
 
 
-# ─── QUESTION BANK: 914 = 457 + 274 + 183 ───
-def build_question_bank(all_docs, n_data=457, n_trap=274, n_edge=183):
-    random.seed(2026)
-    qs = []
+# ═══════════════════════════════════════════════════════════
+# FIX 1: ĐỌC CSV CŨ — robust với pandas-skip + heuristic fallback
+# ═══════════════════════════════════════════════════════════
+def load_old_questions_and_pairs():
+    """Đọc tất cả CSV cũ (kể cả file lỗi). Trả về (set questions, set pairs, loaded)."""
+    csv_files = sorted(OUTPUT_DIR.glob("*_results.csv"), key=lambda p: p.stat().st_mtime, reverse=True)
+    all_qs, pairs = set(), set()
+    loaded = []
 
-    # 457 from_data
+    for f in csv_files:
+        rows = []
+        # Thử pandas strict trước (nhưng skip bad lines)
+        try:
+            df = pd.read_csv(f, encoding="utf-8-sig", on_bad_lines="skip")
+            rows = df.to_dict("records")
+            loaded.append((f.name, len(rows), "pandas-skip"))
+        except Exception:
+            # Fallback: heuristic split — câu hỏi ở cột [3] (sau idx, category, expected)
+            try:
+                with open(f, "r", encoding="utf-8-sig") as fh:
+                    lines = fh.readlines()
+                for line in lines[1:]:  # skip header
+                    line = line.rstrip("\n").rstrip("\r")
+                    if not line.strip():
+                        continue
+                    parts = line.split(",")
+                    if len(parts) < 4:
+                        continue
+                    q = parts[3].strip().strip('"')
+                    if q and q != "nan" and len(q) >= 5:
+                        rows.append({"question": q})
+                loaded.append((f.name, len(rows), "heuristic"))
+            except Exception as e:
+                print(f"⚠️  Bỏ qua hoàn toàn {f.name}: {e}")
+                continue
+
+        for row in rows:
+            q = str(row.get("question", "")).strip()
+            if not q or q == "nan" or len(q) < 5:
+                continue
+            all_qs.add(q)
+            # Extract (dieu, law)
+            m = re.search(r"[Đđ]iều\s+(\d+[a-z]?)\s+(.+?)\s+(?:quy định|-)", q)
+            if m:
+                pairs.add((m.group(1), m.group(2).strip().lower()))
+                continue
+            m = re.search(r"nội dung\s+[Đđ]iều\s+(\d+[a-z]?)\s+của\s+(.+?)\.", q)
+            if m:
+                pairs.add((m.group(1), m.group(2).strip().lower()))
+                continue
+            m = re.search(r"^(.+?)\s+-\s+[Đđ]iều\s+(\d+[a-z]?)", q)
+            if m:
+                pairs.add((m.group(2), m.group(1).strip().lower()))
+
+    return all_qs, pairs, loaded
+
+
+# ═══════════════════════════════════════════════════════════
+# BUILD 914 CÂU MỚI (loại trừ câu cũ)
+# ═══════════════════════════════════════════════════════════
+def build_question_bank(all_docs, old_qs, old_pairs, n_data=457, n_trap=274, n_edge=183):
+    random.seed()  # seed theo thời gian → mỗi lần chạy khác nhau
+    print(f"   🎲 Seed mới: {random.randint(1, 10**6)}")
+
+    qs, seen = [], set()
+
+    def add(cat, q, expected, ref=None):
+        q_clean = q.strip()
+        if not q_clean or q_clean in old_qs or q_clean in seen:
+            return False
+        seen.add(q_clean)
+        rec = {"category": cat, "question": q_clean, "expected": expected}
+        if ref:
+            rec["ref_title"] = ref
+        qs.append(rec)
+        return True
+
+    # ─── 457 from_data ───
     candidates = [d for d in all_docs if re.search(r"Điều\s+\d+", d.metadata.get("title", ""))]
-    sampled = random.sample(candidates, min(n_data, len(candidates)))
-    for d in sampled:
+    random.shuffle(candidates)
+
+    templates = [
+        "Điều {d} {l} quy định gì?",
+        "Cho tôi biết nội dung Điều {d} của {l}.",
+        "{l} - Điều {d} quy định như thế nào?",
+        "Nội dung chi tiết Điều {d} {l} là gì?",
+        "Tóm tắt Điều {d} của {l}.",
+        "Điều {d} {l} có nội dung chính là gì?",
+        "Theo {l}, Điều {d} quy định ra sao?",
+    ]
+
+    n_from_data = 0
+    for d in candidates:
+        if n_from_data >= n_data:
+            break
         title = d.metadata.get("title", "")
         m = re.search(r"Điều\s+(\d+)", title)
         if not m:
             continue
         dieu = m.group(1)
         law = title.split(" - ")[0].strip() if " - " in title else "pháp luật"
-        tpl = random.choice([
-            f"Điều {dieu} {law} quy định gì?",
-            f"Cho tôi biết nội dung Điều {dieu} của {law}.",
-            f"{law} - Điều {dieu} quy định như thế nào?",
-        ])
-        qs.append({"category": "from_data", "question": tpl, "expected": "answer", "ref_title": title})
+        if (dieu, law.lower()) in old_pairs:
+            continue
+        tpl = random.choice(templates)
+        q = tpl.format(d=dieu, l=law)
+        if add("from_data", q, "answer", title):
+            n_from_data += 1
+    print(f"   ✅ from_data: {n_from_data}/{n_data}")
 
-    # 274 trap
+    # ─── 274 trap: pool rộng ───
+    topics = ["giao thông", "thuế", "hải quan", "chứng khoán", "bất động sản",
+              "ngân hàng", "bảo hiểm", "chứng chỉ hành nghề", "giấy phép lao động",
+              "đầu tư", "xuất nhập cảnh", "quốc tịch", "trọng tài", "đấu thầu",
+              "công nghệ", "an ninh mạng", "môi trường", "giáo dục", "y tế", "hôn nhân"]
+    years = [2024, 2025, 2026, 2027, 2028, 2029, 2030, 2032, 2035, 2040]
+    trap_templates = [
+        "Quy định về {t} năm {y} là gì?",
+        "Mức phạt {t} năm {y}?",
+        "Thủ tục {t} năm {y}?",
+        "Điều kiện {t} năm {y}?",
+        "Hồ sơ {t} năm {y} gồm những gì?",
+        "Thời hạn {t} năm {y} là bao lâu?",
+    ]
     base_traps = [
-        "Mức phạt vượt đèn đỏ xe máy theo NĐ 168/2024 là bao nhiêu?",
-        "Nồng độ cồn cho phép khi lái xe năm 2025 là bao nhiêu?",
-        "Bằng lái B2 lái được xe gì?",
-        "Bằng lái A2 lái được xe gì theo luật 2025?",
-        "Mức xử phạt không đội mũ bảo hiểm 2025?",
-        "Tốc độ tối đa trên cao tốc 2025?",
         "Giá Bitcoin hôm nay bao nhiêu?",
         "Thời tiết Hà Nội ngày mai thế nào?",
         "Cách nấu phở ngon?",
         "Cách học tiếng Anh hiệu quả?",
         "Giá vàng SJC hôm nay bao nhiêu?",
         "Đội tuyển Việt Nam thắng chưa?",
-        "Lương tối thiểu vùng 1 năm 2026?",
-        "Thuế VAT 2026 là bao nhiêu?",
-        "Luật Đất đai 2024 quy định thời hạn giao đất nông nghiệp?",
-        "Nghị định 168/2024 xử phạt vượt đèn đỏ xe máy thế nào?",
-        "Luật Trật tự ATGT 2024 có hiệu lực khi nào?",
-        "Mức phạt nồng độ cồn theo NĐ 100/2019?",
-        "Quy định mới về đất đai 2025?",
-        "Luật Nhà ở 2024 có gì mới?",
+        "Tỷ giá USD hôm nay?",
+        "Kết quả xổ số miền Bắc hôm nay?",
+        "Lịch thi đấu bóng đá tối nay?",
+        "Điểm chuẩn đại học 2026?",
+        "Giá xăng hôm nay bao nhiêu?",
+        "Giá điện tháng này tăng chưa?",
+        "Ai là tổng thống Mỹ hiện tại?",
     ]
-    topics = ["giao thông", "thuế", "hải quan", "chứng khoán", "bất động sản",
-              "ngân hàng", "bảo hiểm", "chứng chỉ hành nghề", "giấy phép lao động"]
-    years = [2024, 2025, 2026, 2027, 2030, 2035]
-    traps = list(base_traps)
-    while len(traps) < n_trap:
-        traps.append(f"Quy định về {random.choice(topics)} năm {random.choice(years)} là gì?")
-    for t in traps[:n_trap]:
-        qs.append({"category": "trap", "question": t, "expected": "refuse"})
+    trap_pool = list(base_traps)
+    for t in topics:
+        for y in years:
+            for tpl in trap_templates:
+                trap_pool.append(tpl.format(t=t, y=y))
+    random.shuffle(trap_pool)
+    n_trap_done = 0
+    for q in trap_pool:
+        if n_trap_done >= n_trap:
+            break
+        if add("trap", q, "refuse"):
+            n_trap_done += 1
+    print(f"   ✅ trap: {n_trap_done}/{n_trap}")
 
-    # 183 edge
-    edge = [
-        "Ly hôn", "Bị phạt bao nhiêu?", "Luật mới nhất?", "Như thế nào?", "Tại sao?",
-        "Có không?", "Nghỉ hưu tuổi bao nhiêu?", "Thuế thu nhập cá nhân?",
+    # ─── 183 edge: pool rộng ───
+    edge_topics = ["nhà ở", "đất đai", "hôn nhân", "lao động", "doanh nghiệp",
+                   "chứng khoán", "hải quan", "đấu thầu", "trọng tài", "quốc tịch",
+                   "ly hôn", "thừa kế", "di chúc", "cấp dưỡng", "nuôi con",
+                   "xuất nhập cảnh", "thuế", "giao thông", "bảo hiểm", "giáo dục",
+                   "y tế", "môi trường", "an ninh", "công nghệ", "hợp đồng"]
+    edge_templates = [
+        "Quy định về {t}?",
+        "Thủ tục {t}?",
+        "Điều kiện {t}?",
+        "Mức phạt {t}?",
+        "Hồ sơ {t}?",
+        "Thời hạn {t}?",
+        "Trình tự {t}?",
+        "Căn cứ {t}?",
+    ]
+    edge_pool = [
+        "Ly hôn", "Bị phạt bao nhiêu?", "Luật mới nhất?", "Như thế nào?",
+        "Tại sao?", "Có không?", "Nghỉ hưu tuổi bao nhiêu?", "Thuế thu nhập cá nhân?",
         "Đăng ký kết hôn?", "Làm sao để khởi kiện?", "Điều 15?", "Khoản 2?",
         "Hợp đồng lao động?", "Bảo hiểm xã hội?", "Đất ở?", "Di chúc?", "Thừa kế?",
         "Quyền nuôi con?", "Cấp dưỡng?", "Tranh chấp đất đai?",
     ]
-    edge_topics = ["nhà ở", "đất đai", "hôn nhân", "lao động", "doanh nghiệp",
-                   "chứng khoán", "hải quan", "đấu thầu", "trọng tài", "quốc tịch"]
-    while len(edge) < n_edge:
-        edge.append(f"Quy định về {random.choice(edge_topics)}?")
-    for e in edge[:n_edge]:
-        qs.append({"category": "edge", "question": e, "expected": "any"})
+    for t in edge_topics:
+        for tpl in edge_templates:
+            edge_pool.append(tpl.format(t=t))
+    random.shuffle(edge_pool)
+    n_edge_done = 0
+    for q in edge_pool:
+        if n_edge_done >= n_edge:
+            break
+        if add("edge", q, "any"):
+            n_edge_done += 1
+    print(f"   ✅ edge: {n_edge_done}/{n_edge}")
 
-    return qs[:n_data + n_trap + n_edge]
+    return qs
 
 
-# ─── RUN ONE (FIX 3: thêm misuse check) ───
+# ─── RUN ONE ───
 def run_one(retriever, llm, all_docs, question):
     t0 = time.time()
     ctxs, srcs = retrieve_advanced(retriever, question, all_docs, k=5)
@@ -414,8 +528,8 @@ def run_one(retriever, llm, all_docs, question):
 
 
 # ─── RESUME ───
-def find_latest_csv():
-    files = sorted(OUTPUT_DIR.glob("*_results.csv"), key=lambda p: p.stat().st_mtime, reverse=True)
+def find_resume_csv():
+    files = sorted(OUTPUT_DIR.glob("*_914new.csv"), key=lambda p: p.stat().st_mtime, reverse=True)
     return files[0] if files else None
 
 
@@ -423,7 +537,7 @@ def load_done_idx(csv_path):
     if csv_path is None or not csv_path.exists():
         return set()
     try:
-        df = pd.read_csv(csv_path, encoding="utf-8-sig")
+        df = pd.read_csv(csv_path, encoding="utf-8-sig", on_bad_lines="skip")
         return set(df["idx"].astype(int).tolist())
     except Exception:
         return set()
@@ -431,68 +545,68 @@ def load_done_idx(csv_path):
 
 # ─── PRE-FLIGHT ───
 def preflight(retriever, llm, all_docs):
-    print("\n🚦 PRE-FLIGHT CHECK (đo tốc độ 1 câu)...", flush=True)
-    test_q = "Điều 5 Luật Đấu thầu quy định gì?"
+    print("\n🚦 PRE-FLIGHT...", flush=True)
     t0 = time.time()
     try:
-        _ = run_one(retriever, llm, all_docs, test_q)
+        _ = run_one(retriever, llm, all_docs, "Điều 5 Luật Đấu thầu quy định gì?")
         dt = time.time() - t0
     except Exception as e:
-        print(f"   ❌ Pre-flight fail: {e}")
-        return False, 0
-    print(f"   ⏱️  1 câu = {dt:.1f}s")
-    eta_914 = dt * TARGET_TOTAL / 3600
-    print(f"   ⏳ 914 câu ước tính: {eta_914:.1f} giờ")
-    if dt > 60:
-        print(f"   ⚠️  CHẬM — 914 câu sẽ >15 giờ, KHÔNG kịp trước 7:00!")
-    elif dt > 35:
-        print(f"   ⚠️  Hơi chậm — sẽ hơn 9 giờ, cần chạy kèm resume.")
-    return True, dt
+        print(f"   ❌ fail: {e}")
+        return False
+    print(f"   ⏱️  1 câu = {dt:.1f}s | 914 câu ≈ {dt * TARGET_TOTAL / 3600:.1f}h")
+    return True
 
 
 # ─── MAIN ───
 def main():
     ap = argparse.ArgumentParser()
+    ap.add_argument("--fresh", action="store_true", help="Bỏ resume, tạo CSV mới")
     ap.add_argument("--limit", type=int, default=TARGET_TOTAL)
-    ap.add_argument("--fresh", action="store_true", help="Bỏ qua resume, tạo CSV mới")
     args = ap.parse_args()
 
-    # 1. Resume logic
-    latest_csv = None if args.fresh else find_latest_csv()
-    done_idx = load_done_idx(latest_csv)
+    # 1. Đọc CSV cũ để loại trừ câu đã hỏi
+    print("📖 Đọc CSV cũ để loại trừ câu đã hỏi...")
+    old_qs, old_pairs, loaded = load_old_questions_and_pairs()
+    for name, n, method in loaded:
+        print(f"   - {name}: {n} câu ({method})")
+    print(f"   → Tổng {len(old_qs)} câu unique, {len(old_pairs)} (điều, luật) pairs\n")
+
+    # 2. Resume
+    resume_csv = None if args.fresh else find_resume_csv()
+    done_idx = load_done_idx(resume_csv)
     if done_idx:
-        print(f"♻️  Resume từ: {latest_csv.name} — đã xong {len(done_idx)} câu")
-        csv_path = latest_csv
-        ts = latest_csv.stem.replace("_results", "")
+        print(f"♻️  Resume từ: {resume_csv.name} — đã xong {len(done_idx)} câu")
+        csv_path = resume_csv
     else:
         ts = datetime.now().strftime("%Y%m%d_%H%M%S")
-        csv_path = OUTPUT_DIR / f"{ts}_results.csv"
+        csv_path = OUTPUT_DIR / f"{ts}_914new.csv"
         print(f"🆕 Bắt đầu mới: {csv_path.name}")
+    print()
 
-    # 2. Load engine
+    # 3. Load engine
     retriever, llm, all_docs = load_engine()
 
-    # 3. Build 914 câu
-    qs = build_question_bank(all_docs)
-    print(f"📝 Tổng câu bank: {len(qs)} (457 from_data + 274 trap + 183 edge)")
+    # 4. Build bank
+    print("\n📝 Xây bank 914 câu MỚI (loại trừ câu cũ):")
+    qs = build_question_bank(all_docs, old_qs, old_pairs)
+    print(f"   → Tổng: {len(qs)} câu")
     qs = qs[:args.limit]
     remaining = [q for i, q in enumerate(qs, 1) if i not in done_idx]
-    print(f"▶️  Cần làm: {len(remaining)} / {len(qs)} câu\n")
+    print(f"\n▶️  Cần làm: {len(remaining)}/{len(qs)} câu\n")
 
-    # 4. Pre-flight (chỉ chạy nếu bắt đầu mới)
+    # 5. Pre-flight
     if not done_idx:
-        ok, dt = preflight(retriever, llm, all_docs)
-        if not ok:
+        if not preflight(retriever, llm, all_docs):
             return
 
-    # 5. Ghi header CSV nếu file mới
-    if csv_path.stat().st_size == 0 if csv_path.exists() else True:
-        header = ["idx", "category", "expected", "question", "answer",
-                  "verdict", "reason", "time_sec", "n_citations", "n_contexts", "ts_utc"]
-        with open(csv_path, "w", encoding="utf-8-sig") as f:
-            f.write(",".join(header) + "\n")
+    # 6. Header CSV — FIX: dùng csv module
+    if not csv_path.exists() or csv_path.stat().st_size == 0:
+        with open(csv_path, "w", encoding="utf-8-sig", newline="") as f:
+            w = csv.writer(f, quoting=csv.QUOTE_ALL)
+            w.writerow(["idx", "category", "expected", "question", "answer",
+                        "verdict", "reason", "time_sec", "n_citations", "n_contexts", "ts_utc"])
 
-    # 6. Loop
+    # 7. Loop
     t_start = time.time()
     n_done = len(done_idx)
     for i, q in enumerate(qs, 1):
@@ -504,28 +618,28 @@ def main():
             r = {"answer": f"ERROR:{e}", "verdict": "error", "reason": str(e)[:80],
                  "time": 0, "n_citations": 0, "n_contexts": 0}
 
-        row = {
-            "idx": i,
-            "category": q["category"],
-            "expected": q["expected"],
-            "question": q["question"],
-            "answer": r["answer"].replace('"', "'").replace("\n", " "),
-            "verdict": r["verdict"],
-            "reason": r["reason"],
-            "time_sec": round(r["time"], 2),
-            "n_citations": r["n_citations"],
-            "n_contexts": r["n_contexts"],
-            "ts_utc": datetime.utcnow().isoformat(timespec="seconds"),
-        }
-        # Ghi ngay
-        with open(csv_path, "a", encoding="utf-8-sig") as f:
-            f.write(",".join(str(row[k]) for k in row.keys()) + "\n")
+        # FIX: ghi bằng csv.writer(QUOTE_ALL) — không hỏng khi có dấu phẩy
+        with open(csv_path, "a", encoding="utf-8-sig", newline="") as f:
+            w = csv.writer(f, quoting=csv.QUOTE_ALL)
+            w.writerow([
+                i,
+                q["category"],
+                q["expected"],
+                q["question"],
+                r["answer"].replace("\n", " "),
+                r["verdict"],
+                r["reason"],
+                round(r["time"], 2),
+                r["n_citations"],
+                r["n_contexts"],
+                datetime.utcnow().isoformat(timespec="seconds"),
+            ])
 
         n_done += 1
         elapsed = time.time() - t_start
         eta = elapsed / max(1, (i - len(done_idx))) * (len(qs) - i)
         print(f"[{i:3d}/{len(qs)}] {q['category']:10s} {r['verdict']:8s} "
-              f"({r['time']:.1f}s) ETA {eta/3600:.1f}h | {q['question'][:50]}", flush=True)
+              f"({r['time']:.1f}s) ETA {eta/3600:.1f}h | {q['question'][:55]}", flush=True)
 
     print(f"\n✅ Hoàn tất {n_done}/{len(qs)} câu trong {(time.time()-t_start)/3600:.1f}h")
     print(f"📁 CSV: {csv_path}")
