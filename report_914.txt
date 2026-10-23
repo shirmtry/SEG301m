@@ -1,0 +1,177 @@
+======================================================================
+📊 BÁO CÁO PHÂN TÍCH 914 CÂU MỚI
+======================================================================
+
+📄 914 câu mới — 914 câu
+----------------------------------------------------------------------
+  refused   :   474 ( 51.9%)
+  warning   :   225 ( 24.6%)
+  answered  :   196 ( 21.4%)
+  blocked   :    19 (  2.1%)
+
+  Thời gian TB: 21.7s
+  Tổng thời gian: 5.5h
+
+Theo category:
+
+  [from_data] n=457
+    warning   :   166 ( 36.3%)
+    refused   :   143 ( 31.3%)
+    answered  :   131 ( 28.7%)
+    blocked   :    17 (  3.7%)
+
+  [trap] n=274
+    refused   :   238 ( 86.9%)
+    warning   :    23 (  8.4%)
+    answered  :    12 (  4.4%)
+    blocked   :     1 (  0.4%)
+
+  [edge] n=183
+    refused   :    93 ( 50.8%)
+    answered  :    53 ( 29.0%)
+    warning   :    36 ( 19.7%)
+    blocked   :     1 (  0.5%)
+
+Reasons:
+  model_refused            :   474
+  uncited                  :   225
+  ok                       :   196
+  fake_citation            :    17
+  citation_misuse          :     2
+
+======================================================================
+📈 SO SÁNH 500 CŨ vs 914 MỚI
+======================================================================
+  Verdict              Cũ        Mới          Δ
+  answered           5.0%      21.4% ↑ +16.4%
+  blocked            0.2%       2.1% ↑  +1.9%
+  refused           53.4%      51.9% ↓  -1.5%
+  warning           41.4%      24.6% ↓ -16.8%
+
+======================================================================
+⚠️ TRAPS FAIL: 35 câu
+======================================================================
+
+1. [answered] Q: Quy định về giao thông năm 2029 là gì?
+     A: Quy định về giao thông năm 2029 liên quan đến việc lắp thiết bị ghi nhận hình ảnh khoang chở khách đối với xe ô tô kinh doanh vận tải hành k
+
+2. [answered] Q: Quy định về đầu tư năm 2025 là gì?
+     A: Quy định về đầu tư năm 2025 được quy định trong Luật Đầu tư (VBHN 2025). Theo đó, nhà đầu tư nước ngoài và tổ chức kinh tế có thể thực hiện 
+
+3. [warning] Q: Hồ sơ bất động sản năm 2024 gồm những gì?
+     A: Hồ sơ bất động sản năm 2024 cần gồm giấy chứng tử hoặc giấy tờ khác theo quy định của pháp luật, di chúc (nếu có), và các tài liệu về quyền 
+
+4. [answered] Q: Thời hạn đấu thầu năm 2025 là bao lâu?
+     A: Thời hạn đấu thầu năm 2025 áp dụng cho tất cả các gói thầu, trừ trường hợp không thực hiện trên Hệ thống mạng đấu thầu quốc gia. [1]
+
+5. [warning] Q: Hồ sơ đấu thầu năm 2027 gồm những gì?
+     A: Hồ sơ đấu thầu năm 2027 cần nêu rõ: - Nguồn vốn đã được xác định hoặc phê duyệt. - Giá gói thầu bao gồm chi phí thực hiện và dự phòng, lệ ph
+
+6. [answered] Q: Hồ sơ chứng chỉ hành nghề năm 2026 gồm những gì?
+     A: Hồ sơ chứng chỉ hành nghề năm 2026 cần gồm: - Chứng nhận trình độ chuyên môn phù hợp với lĩnh vực. - Sổ ghi chép kinh nghiệm tham gia công v
+
+7. [warning] Q: Hồ sơ môi trường năm 2030 gồm những gì?
+     A: Hồ sơ môi trường năm 2030 cần gồm: - Quy hoạch bảo vệ môi trường quốc gia - Báo cáo đánh giá tác động môi trường (nếu có) - Các quy chuẩn kỹ
+
+8. [warning] Q: Thủ tục đấu thầu năm 2024?
+     A: Thủ tục đấu thầu năm 2024 theo Luật Đấu Thầu số 22/2023/QH15: - Từ ngày luật có hiệu lực (đến hết tháng 12/2024), việc đấu thầu qua mạng hoặ
+
+9. [warning] Q: Quy định về giáo dục năm 2025 là gì?
+     A: Quy định về giáo dục năm 2025 được thể hiện trong Luật Giáo dục (VBHN 2026). Cụ thể: - Chương trình giáo dục mầm non quy định mục tiêu, yêu 
+
+10. [warning] Q: Thủ tục đấu thầu năm 2035?
+     A: Thủ tục đấu thầu năm 2035 sẽ tuân theo quy định của Luật Đấu Thầu số 22/2023/QH15. Từ ngày 01 tháng 01 năm 2025, tất cả gói thầu đều phải th
+
+11. [warning] Q: Hồ sơ giáo dục năm 2026 gồm những gì?
+     A: Hồ sơ giáo dục năm 2026 gồm: - Khung cơ cấu hệ thống giáo dục quốc dân và Khung trình độ quốc gia Việt Nam (Thủ tướng Chính phủ quyết định).
+
+12. [warning] Q: Quy định về hôn nhân năm 2028 là gì?
+     A: Quy định về hôn nhân năm 2028 được quy định trong Luật Hôn nhân và gia đình (VBHN 2025). VBHN 2025 không có cụ thể thông tin về các điều kho
+
+13. [warning] Q: Hồ sơ trọng tài năm 2027 gồm những gì?
+     A: Hồ sơ trọng tài năm 2027 gồm: - Đơn đề nghị thành lập Trung tâm trọng tài. - Dự thảo điều lệ của Trung tâm trọng tài theo mẫu Bộ Tư pháp ban
+
+14. [answered] Q: Hồ sơ đầu tư năm 2032 gồm những gì?
+     A: Hồ sơ đầu tư năm 2032 bao gồm: 1. Văn bản hợp đồng 2. Phụ lục hợp đồng (nếu có) 3. Biên bản đàm phán, hoàn thiện hợp đồng [5] 4. Quyết định 
+
+15. [answered] Q: Hồ sơ thuế năm 2032 gồm những gì?
+     A: Hồ sơ thuế năm 2032 gồm: - Tờ khai thuế năm. - Hóa đơn, hợp đồng và chứng từ khác có liên quan đến nghĩa vụ thuế theo quy định của pháp luật
+
+16. [warning] Q: Hồ sơ ngân hàng năm 2025 gồm những gì?
+     A: Hồ sơ ngân hàng năm 2025 cần gồm: - Thông tin cơ bản về công ty và Điều lệ công ty. - Mục tiêu tổng quát, mục tiêu cụ thể của kế hoạch kinh 
+
+17. [answered] Q: Hồ sơ đầu tư năm 2026 gồm những gì?
+     A: Hồ sơ đầu tư năm 2026 gồm: - Văn bản đăng ký đầu tư ra nước ngoài - Tài liệu về tư cách pháp lý của nhà đầu tư - Đề xuất dự án đầu tư, detai
+
+18. [warning] Q: Quy định về hôn nhân năm 2026 là gì?
+     A: Quy định về hôn nhân năm 2026 được quy định tại Luật Hôn nhân và gia đình (VBHN 2025). Quan hệ vợ chồng, tài sản sau khi tuyên bố đã chết kh
+
+19. [warning] Q: Điều kiện hôn nhân năm 2035?
+     A: Điều kiện hôn nhân năm 2035 theo Luật Hôn Nhân và Gia Đình (VBHN 2025) là: Nam từ đủ 20 tuổi trở lên, nữ từ đủ 18 tuổi trở lên.
+
+20. [warning] Q: Hồ sơ giáo dục năm 2025 gồm những gì?
+     A: Hồ sơ giáo dục năm 2025 gồm: - Chương trình giáo dục phổ thông, mầm non và đại học đã được thẩm định. - Chuẩn đầu ra cho từng cấp độ đào tạo
+
+21. [warning] Q: Hồ sơ giao thông năm 2026 gồm những gì?
+     A: Hồ sơ giao thông năm 2026 gồm: - Dự thảo báo cáo nghiên cứu khả thi, thiết kế xây dựng công trình đường bộ. - Thiết kế cơ sở và triển khai s
+
+22. [warning] Q: Điều kiện ngân hàng năm 2028?
+     A: Điều kiện ngân hàng năm 2028 theo Luật Các tổ chức tín dụng (VBHN 2025) là: - Cấp tín dụng tối đa cho một khách hàng: 11% vốn tự có - Cấp tí
+
+23. [warning] Q: Thủ tục đấu thầu năm 2027?
+     A: Đấu thầu năm 2027 sẽ tuân theo quy định của Luật Đấu Thầu số 22/2023/QH15. Theo đó, từ ngày 2024 đến hết tháng 12 năm nay đấu thầu vẫn có th
+
+24. [warning] Q: Hồ sơ thuế năm 2024 gồm những gì?
+     A: Hồ sơ thuế năm 2024 gồm: - Tờ khai thuế năm. - Các tài liệu khác liên quan đến xác định số tiền thuế phải nộp (Điều 43 VBHN 2025).
+
+25. [warning] Q: Hồ sơ xuất nhập cảnh năm 2025 gồm những gì?
+     A: Hồ sơ xuất nhập cảnh năm 2025 bao gồm: - Hộ chiếu ngoại giao, hộ chiếu công vụ hoặc hộ chiếu phổ thông. - Giấy thông hành (nếu có). - Thông 
+
+26. [warning] Q: Thủ tục đấu thầu năm 2026?
+     A: Thủ tục đấu thầu năm 2026 theo Luật Đấu Thầu số 22/2023/QH15 sẽ áp dụng các gói thầu qua mạng đối với tất cả, trừ trường hợp không được thực
+
+27. [answered] Q: Quy định về giáo dục năm 2026 là gì?
+     A: Quy định về giáo dục năm 2026 là Luật Giáo dục (VBHN 2026). Đây là văn bản pháp luật mới ban hành thay thế cho các quy định trước đó. Quyết 
+
+28. [warning] Q: Hồ sơ trọng tài năm 2032 gồm những gì?
+     A: Hồ sơ trọng tài năm 2032 gồm: - Đơn đề nghị thành lập Trung tâm Trọng tài. - Dự thảo điều lệ của Trung tâm trọng tài theo mẫu Bộ Tư pháp ban
+
+29. [answered] Q: Thời hạn giấy phép lao động năm 2026 là bao lâu?
+     A: Theo Điều 155 Bộ luật Lao động (VBHN 2025), thời hạn của giấy phép lao động tối đa là 02 năm. Trường hợp gia hạn chỉ được một lần với thời h
+
+30. [answered] Q: Quy định về hôn nhân năm 2025 là gì?
+     A: Quy định về hôn nhân năm 2025 trong Luật Hôn Nhân và Gia Đình (VBHN 2025) tập trung vào các khía cạnh như quan hệ vợ chồng sau khi kết hôn, 
+
+======================================================================
+⚠️ DATA MISS (lẽ ra answer, bị refused): 143 câu
+======================================================================
+1. Theo Luật Xây dựng (VBHN 2025), Điều 71 quy định ra sao?
+2. Luật Cạnh tranh 2018 - Điều 100 quy định như thế nào?
+3. Điều 126 Luật Tổ chức Tòa án nhân dân quy định gì?
+4. Luật Tổ chức Viện kiểm sát nhân dân - Điều 16 quy định như thế nào?
+5. Theo Luật Xây dựng (VBHN 2025), Điều 87 quy định ra sao?
+6. Tóm tắt Điều 313 của Bộ luật Tố tụng dân sự (VBHN 2025).
+7. Luật Bảo hiểm y tế (VBHN 2025) - Điều 49 quy định như thế nào?
+8. Cho tôi biết nội dung Điều 45 của Luật Tổ chức Tòa án nhân dân.
+9. Theo Luật Cán bộ, công chức số 22/2008/QH12, Điều 51 quy định ra sao?
+10. Luật Cán bộ, công chức số 22/2008/QH12 - Điều 41 quy định như thế nào?
+11. Theo Luật Kinh doanh bất động sản (VBHN 2025), Điều 36 quy định ra sao?
+12. Luật Tổ chức Viện kiểm sát nhân dân - Điều 8 quy định như thế nào?
+13. Điều 16 Luật Thuế giá trị gia tăng (VBHN 2026) có nội dung chính là gì?
+14. Tóm tắt Điều 76 của Luật Tổ chức Quốc hội.
+15. Cho tôi biết nội dung Điều 397 của Bộ luật Tố tụng dân sự (VBHN 2025).
+16. Tóm tắt Điều 201 của Bộ luật Tố tụng dân sự (VBHN 2025).
+17. Tóm tắt Điều 6 của Luật An toàn thực phẩm (VBHN 2025).
+18. Tóm tắt Điều 22 của Luật Tổ chức Quốc hội.
+19. Theo Luật Giao dịch điện tử (VBHN 2025), Điều 41 quy định ra sao?
+20. Nội dung chi tiết Điều 41 Hiến pháp 2013 là gì?
+21. Điều 26 Luật Giao dịch điện tử (VBHN 2025) có nội dung chính là gì?
+22. Luật Khiếu nại - Điều 6 quy định như thế nào?
+23. Cho tôi biết nội dung Điều 69 của Luật Trật tự, an toàn giao thông đường bộ (VBH
+24. Điều 64 Luật Xây dựng (VBHN 2025) có nội dung chính là gì?
+25. Nội dung chi tiết Điều 96 Luật Khám bệnh, chữa bệnh (VBHN 2026) là gì?
+26. Tóm tắt Điều 61 của Luật Thi hành án dân sự 2008.
+27. Cho tôi biết nội dung Điều 3 của Luật Xây dựng (VBHN 2025).
+28. Luật Cạnh tranh 2018 - Điều 29 quy định như thế nào?
+29. Điều 30 Luật Bảo vệ môi trường (VBHN 2025) quy định gì?
+30. Theo Luật Phòng, chống tham nhũng số 36/2018/QH14, Điều 6 quy định ra sao?
