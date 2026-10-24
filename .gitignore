@@ -28,3 +28,12 @@ app.py
 phantich.py
 ana_chamdiem.py
 ana_diem_bao_cao.py
+ana_huytking.py
+api_server.py
+app copy 2.py
+auto_gen_test.py
+eval_results.json
+evaluate_rag.py
+pipeline.py
+rag_engine.py
+test_cases.json
